@@ -1,0 +1,3798 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Ekskul Robotik & Pemrograman - SMK TI Bali Global Karangasem</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/id.min.js"></script>
+    
+    <!-- SheetJS untuk export Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <!-- Chart.js untuk grafik -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- html2canvas untuk generate sertifikat -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- jsPDF untuk export PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Particle.js untuk background animasi -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #1a1f35 50%, #0d1b2a 100%);
+            color: #fff;
+            position: relative;
+        }
+
+        /* Particle Background */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0a0f1e 0%, #1a1f35 50%, #0d1b2a 100%);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+            background: #1a1f35;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #00d4ff, #0a5cff);
+            border-radius: 4px;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5)); }
+            50% { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.8)); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Custom Classes */
+        .roboto-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5),
+                         0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .gradient-bg {
+            background: linear-gradient(45deg, #00d4ff, #0a5cff);
+        }
+
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .hover-scale {
+            transition: transform 0.2s ease;
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.03);
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0f1e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-content {
+            text-align: center;
+            padding: 20px;
+            max-width: 90%;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: #00d4ff;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 16px;
+        }
+
+        .modal-content {
+            max-width: 500px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            margin: 0 auto;
+        }
+
+        /* Form Inputs */
+        input, select, textarea {
+            color: #000000 !important;
+            background-color: #ffffff !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 8px;
+            padding: 12px;
+            width: 100%;
+            font-size: 16px !important;
+        }
+
+        select option {
+            color: #000000 !important;
+            background-color: #ffffff !important;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #9ca3af !important;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 90%;
+        }
+
+        .toast {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 16px 20px;
+            color: #1a1a1a;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            max-width: 350px;
+            border-left: 4px solid #00d4ff;
+        }
+
+        .toast.success { border-left-color: #10b981; }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.warning { border-left-color: #f59e0b; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Notification */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            border-radius: 50%;
+            min-width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
+        .notification-panel {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(26, 31, 53, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            z-index: 50;
+            display: none;
+        }
+
+        .notification-panel.show {
+            display: block;
+        }
+
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .notification-item.unread {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        /* Admin Badge */
+        .admin-badge {
+            background: linear-gradient(45deg, #ffd700, #ffa500);
+            color: #000;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-left: 6px;
+        }
+
+        /* Table Styles */
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .attendance-table th {
+            background: rgba(0, 212, 255, 0.2);
+            padding: 12px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .attendance-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 13px;
+        }
+
+        .attendance-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin: 0 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 44px;
+            min-width: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn.edit {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .action-btn.edit:hover {
+            background: rgba(0, 212, 255, 0.3);
+        }
+
+        .action-btn.delete {
+            background: rgba(255, 75, 75, 0.2);
+            color: #ff4b4b;
+        }
+
+        .action-btn.delete:hover {
+            background: rgba(255, 75, 75, 0.3);
+        }
+
+        /* Social Links */
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            min-height: 44px;
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            background: rgba(0, 212, 255, 0.2);
+        }
+
+        /* Emoji Reactions */
+        .emoji-picker {
+            display: flex;
+            gap: 4px;
+            padding: 4px 0;
+            margin-top: 6px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .emoji-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .emoji-btn:hover {
+            transform: scale(1.2);
+            background: rgba(0, 212, 255, 0.3);
+        }
+
+        .emoji-btn.active {
+            background: linear-gradient(45deg, #00d4ff, #0a5cff);
+            box-shadow: 0 0 10px rgba(0,212,255,0.5);
+        }
+
+        .reaction-counter {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .reaction-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 44px;
+        }
+
+        .reaction-badge:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .reaction-badge.active {
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid #00d4ff;
+        }
+
+        .reaction-emoji {
+            font-size: 14px;
+        }
+
+        .reaction-count {
+            font-weight: 600;
+            color: #00d4ff;
+        }
+        
+        /* Online Status */
+        .online-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 10%;
+            right: 25%;
+            border: 2px solid #1a1f35;
+        }
+        
+        .online-dot.online {
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+        
+        .online-dot.offline {
+            background: #6b7280;
+        }
+        
+        /* Preview Foto */
+        .photo-preview-container {
+            position: relative;
+            width: 100%;
+            min-height: 150px;
+            border: 2px dashed rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            overflow: hidden;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .photo-preview {
+            max-width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .photo-preview-placeholder {
+            text-align: center;
+            padding: 20px;
+            color: #9ca3af;
+        }
+
+        .photo-preview-placeholder i {
+            font-size: 48px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        .camera-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: linear-gradient(45deg, #00d4ff, #0a5cff);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .camera-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .camera-btn input {
+            display: none;
+        }
+
+        .upload-progress {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .upload-progress.show {
+            display: block;
+        }
+
+        .upload-progress-bar {
+            height: 100%;
+            background: linear-gradient(45deg, #00d4ff, #0a5cff);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        /* Grafik Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin: 20px 0;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        /* Sertifikat Container (hidden) */
+        #certificate-template {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            width: 800px;
+            background: white;
+            color: black;
+            padding: 40px;
+            border: 20px solid #00d4ff;
+            border-radius: 20px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Responsive */
+        @media (max-width: 640px) {
+            .modal-content { 
+                padding: 16px; 
+                width: 95%;
+            }
+            
+            button, .action-btn, .social-link, [onclick] {
+                min-height: 44px;
+            }
+            
+            .notification-panel {
+                width: 90%;
+                right: 5%;
+                max-width: 320px;
+            }
+            
+            h1 { font-size: 1.5rem !important; }
+            .text-6xl { font-size: 3rem !important; }
+            .text-5xl { font-size: 2rem !important; }
+            
+            .attendance-table {
+                font-size: 12px;
+            }
+            
+            .attendance-table th,
+            .attendance-table td {
+                padding: 8px;
+                white-space: nowrap;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particles-js"></div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="loader"></div>
+            <h3 class="text-xl font-bold mb-2 roboto-font neon-text">Ekskul Robotik</h3>
+            <p class="text-gray-400" id="loading-progress">0%</p>
+            <p class="text-sm text-gray-500 mt-2">SMK TI Bali Global Karangasem</p>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="relative z-10 min-h-screen"></div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Notification Panel -->
+    <div id="notification-panel" class="notification-panel"></div>
+    
+    <!-- Template Sertifikat (Hidden) -->
+    <div id="certificate-template"></div>
+
+    <!-- Tempat untuk Google Ads -->
+    <div id="ads-container" class="fixed bottom-4 left-4 z-50 hidden">
+        <div class="bg-white/10 backdrop-blur-lg rounded-lg p-2 text-xs text-gray-400">
+            Iklan akan tampil di sini
+        </div>
+    </div>
+
+    <script>
+        // FIREBASE CONFIGURATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyAkLcYEkg4Yp16pbUCIlH7012Ut4Xi02ks",
+            authDomain: "absensii-e6e72.firebaseapp.com",
+            databaseURL: "https://absensii-e6e72-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "absensii-e6e72",
+            storageBucket: "absensii-e6e72.firebasestorage.app",
+            messagingSenderId: "556643295146",
+            appId: "1:556643295146:web:7102ef592a2b04b29615d3",
+            measurementId: "G-8YTM2D55GP"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        const messaging = firebase.messaging();
+
+        moment.locale('id');
+
+        // DEVELOPER CREDENTIALS
+        const DEV_EMAIL = "saputraamanah999@gmail.com";
+        const DEV_PASSWORD = "saputra123";
+
+        // LINK GRUP
+        const groupLinks = {
+            whatsapp: "https://chat.whatsapp.com/ColZ2pZ0lVrIlgnsHLt0gy?mode=gi_t"
+        };
+
+        // STATE MANAGEMENT
+        let currentUser = null;
+        let userData = null;
+        let userRole = 'member';
+        let currentPage = 'home';
+        
+        let members = [];
+        let attendance = [];
+        let attendanceHistory = [];
+        let projects = [];
+        let schedules = [];
+        let notifications = [];
+        let teachers = [];
+        
+        let unreadCount = 0;
+        let showNotificationPanel = false;
+        
+        let showLoginModal = false;
+        let showRegisterModal = false;
+        let showForgotModal = false;
+        let showEditProfileModal = false;
+        let showAddProjectModal = false;
+        let showAddScheduleModal = false;
+        let showAddNotificationModal = false;
+        let showAddTeacherModal = false;
+        let showEditProjectModal = false;
+        let showEditScheduleModal = false;
+        let showEditTeacherModal = false;
+        
+        let selectedProject = null;
+        let selectedSchedule = null;
+        let selectedTeacher = null;
+        
+        let notificationReactions = {};
+        let onlineUsers = {};
+        let onlineCheckInterval = null;
+        let lastRenderTime = 0;
+        const RENDER_THROTTLE = 1000;
+        
+        // Chart instance
+        let attendanceChart = null;
+
+        // DATA EKSKUL
+        const ekstraData = {
+            name: "Robotik & Pemrograman",
+            school: "SMK TI Bali Global Karangasem",
+            description: "Ekskul Robotik & Pemrograman adalah wadah bagi siswa yang ingin mengembangkan kemampuan dalam bidang teknologi, robotika, dan pemrograman.",
+            logo: "🤖",
+            vision: "Menjadi pusat pengembangan teknologi robotika dan pemrograman tingkat nasional.",
+            mission: [
+                "Mengembangkan minat dan bakat siswa dalam bidang robotika",
+                "Mempersiapkan siswa untuk kompetisi teknologi",
+                "Menciptakan inovasi teknologi bermanfaat"
+            ]
+        };
+
+        const technologies = [
+            { name: "Python", icon: "fab fa-python", color: "#3776AB" },
+            { name: "JavaScript", icon: "fab fa-js", color: "#F7DF1E" },
+            { name: "Arduino", icon: "fas fa-microchip", color: "#00979D" },
+            { name: "React", icon: "fab fa-react", color: "#61DAFB" },
+            { name: "Node.js", icon: "fab fa-node", color: "#339933" },
+            { name: "IoT", icon: "fas fa-wifi", color: "#00A4EF" },
+            { name: "AI", icon: "fas fa-brain", color: "#FF6B6B" },
+            { name: "Robotics", icon: "fas fa-robot", color: "#FFD700" }
+        ];
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize AOS
+            AOS.init({ duration: 800, once: true, offset: 50 });
+
+            // Initialize Particles
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: '#00d4ff' },
+                    shape: { type: 'circle' },
+                    opacity: { value: 0.5, random: false },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: '#00d4ff', opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+                },
+                interactivity: {
+                    detect_on: 'canvas',
+                    events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                    modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+                },
+                retina_detect: true
+            });
+
+            // Simulate loading
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                document.getElementById('loading-progress').textContent = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('loading-screen').style.opacity = '0';
+                        setTimeout(() => {
+                            document.getElementById('loading-screen').style.display = 'none';
+                        }, 300);
+                    }, 300);
+                }
+            }, 30);
+
+            // Load all data
+            await Promise.all([
+                loadMembers(),
+                loadTeachers(),
+                loadProjects(),
+                loadSchedules(),
+                loadNotifications(),
+                loadAttendanceHistory()
+            ]);
+            
+            await loadTodayAttendance();
+            requestNotificationPermission();
+            initializeAds();
+            renderMainContent();
+        });
+
+        // ==================== LOAD DATA ====================
+        async function loadMembers() {
+            try {
+                const snapshot = await db.collection('members').get();
+                if (snapshot.empty) {
+                    // Seed data awal jika kosong
+                    const defaultMembers = [
+                        {
+                            name: "I Made Andika Putra",
+                            email: "andika@student.sch.id",
+                            class: "XI RPL",
+                            photo: "https://ui-avatars.com/api/?name=I+Made+Andika&background=ff416c&color=fff",
+                            role: "Ketua",
+                            totalAttendance: 0
+                        },
+                        {
+                            name: "Ni Kadek Dwi Lestari",
+                            email: "dwi@student.sch.id",
+                            class: "XI RPL",
+                            photo: "https://ui-avatars.com/api/?name=Ni+Kadek+Dwi&background=ff4b2b&color=fff",
+                            role: "Wakil Ketua",
+                            totalAttendance: 0
+                        }
+                    ];
+                    
+                    for (const member of defaultMembers) {
+                        await db.collection('members').add(member);
+                    }
+                    members = defaultMembers;
+                } else {
+                    members = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                }
+                console.log('Members loaded:', members.length);
+                return members;
+            } catch (error) {
+                console.error("Error loading members:", error);
+                showToast('Gagal load members: ' + error.message, 'error');
+                return [];
+            }
+        }
+
+        async function loadTeachers() {
+            try {
+                const snapshot = await db.collection('teachers').get();
+                if (snapshot.empty) {
+                    const defaultTeachers = [
+                        {
+                            name: "I Putu Bastisn, S.Pd",
+                            role: "Pembina Utama",
+                            expertise: ["Arduino", "AI", "Robotika"],
+                            photo: "https://ui-avatars.com/api/?name=I+Putu+Bastisn&background=0a5cff&color=fff&size=128",
+                            bio: "Ahli robotika dengan pengalaman 10 tahun.",
+                            email: "bastisn@teacher.sch.id"
+                        },
+                        {
+                            name: "I Komang Edi Saputra",
+                            role: "Pembina Web",
+                            expertise: ["JavaScript", "AI", "Arduino"],
+                            photo: "https://ui-avatars.com/api/?name=I+Komang+Edi+Saputra&background=00d4ff&color=fff&size=128",
+                            bio: "Full-stack developer spesialisasi React.",
+                            email: "edi@teacher.sch.id"
+                        }
+                    ];
+                    
+                    for (const teacher of defaultTeachers) {
+                        await db.collection('teachers').add(teacher);
+                    }
+                    teachers = defaultTeachers;
+                } else {
+                    teachers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                }
+            } catch (error) {
+                console.error("Error loading teachers:", error);
+            }
+        }
+
+        async function loadProjects() {
+            try {
+                const snapshot = await db.collection('projects').orderBy('createdAt', 'desc').get();
+                projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            } catch (error) {
+                console.error("Error loading projects:", error);
+                projects = [];
+            }
+        }
+
+        async function loadSchedules() {
+            try {
+                const snapshot = await db.collection('schedules').orderBy('day', 'asc').get();
+                schedules = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            } catch (error) {
+                console.error("Error loading schedules:", error);
+                schedules = [];
+            }
+        }
+
+        async function loadNotifications() {
+            try {
+                const snapshot = await db.collection('notifications')
+                    .orderBy('createdAt', 'desc')
+                    .limit(20)
+                    .get();
+                    
+                notifications = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                if (currentUser) {
+                    unreadCount = notifications.filter(n => 
+                        !n.readBy || !n.readBy.includes(currentUser.uid)
+                    ).length;
+                }
+                
+                await loadAllReactions();
+                
+            } catch (error) {
+                console.error("Error loading notifications:", error);
+                notifications = [];
+            }
+        }
+
+        async function loadTodayAttendance() {
+            try {
+                const today = moment().format('YYYY-MM-DD');
+                const snapshot = await db.collection('attendance')
+                    .where('date', '==', today)
+                    .get();
+                attendance = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                console.log('Today attendance loaded:', attendance.length);
+            } catch (error) {
+                console.error("Error loading today attendance:", error);
+                attendance = [];
+            }
+        }
+
+        async function loadAttendanceHistory() {
+            try {
+                const snapshot = await db.collection('attendance')
+                    .orderBy('date', 'desc')
+                    .orderBy('time', 'desc')
+                    .get();
+                attendanceHistory = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                console.log('Attendance history loaded:', attendanceHistory.length);
+            } catch (error) {
+                console.error("Error loading attendance history:", error);
+                attendanceHistory = [];
+            }
+        }
+
+        // ==================== REAKSI NOTIFIKASI ====================
+        window.sendReaction = async (notificationId, emoji) => {
+            if (!currentUser) {
+                showToast('Silakan login untuk memberikan reaksi', 'warning');
+                return;
+            }
+            
+            try {
+                const reactionRef = db.collection('notificationReactions').doc(`${notificationId}_${currentUser.uid}`);
+                const reactionDoc = await reactionRef.get();
+                
+                if (reactionDoc.exists) {
+                    await reactionRef.delete();
+                    showToast('Reaksi dihapus');
+                } else {
+                    await reactionRef.set({
+                        notificationId,
+                        userId: currentUser.uid,
+                        userName: userData?.name || currentUser.displayName,
+                        userPhoto: userData?.photo || currentUser.photoURL,
+                        emoji,
+                        createdAt: new Date()
+                    });
+                    showToast('Reaksi dikirim!');
+                }
+                
+                await loadAllReactions();
+                updateNotificationPanel();
+            } catch (error) {
+                console.error('Error sending reaction:', error);
+                showToast('Gagal mengirim reaksi', 'error');
+            }
+        };
+
+        async function loadAllReactions() {
+            try {
+                const snapshot = await db.collection('notificationReactions').get();
+                const allReactions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                notificationReactions = {};
+                allReactions.forEach(r => {
+                    if (!notificationReactions[r.notificationId]) {
+                        notificationReactions[r.notificationId] = {
+                            reactions: [],
+                            counts: {},
+                            userReaction: null
+                        };
+                    }
+                    notificationReactions[r.notificationId].reactions.push(r);
+                    
+                    const emoji = r.emoji;
+                    notificationReactions[r.notificationId].counts[emoji] = 
+                        (notificationReactions[r.notificationId].counts[emoji] || 0) + 1;
+                    
+                    if (currentUser && r.userId === currentUser.uid) {
+                        notificationReactions[r.notificationId].userReaction = emoji;
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading all reactions:', error);
+            }
+        }
+
+        // ==================== ONLINE STATUS ====================
+        async function updateOnlineStatus() {
+            if (!currentUser) return;
+            
+            try {
+                const userStatusRef = db.collection('status').doc(currentUser.uid);
+                
+                await userStatusRef.set({
+                    userId: currentUser.uid,
+                    name: userData?.name || currentUser.displayName,
+                    email: currentUser.email,
+                    photo: userData?.photo || currentUser.photoURL,
+                    role: userRole,
+                    online: true,
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                
+                setupOnlineStatusListener();
+                
+                const handleBeforeUnload = async () => {
+                    try {
+                        await userStatusRef.update({
+                            online: false,
+                            lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    } catch (e) {
+                        console.error('Error updating status on unload:', e);
+                    }
+                };
+                
+                window.removeEventListener('beforeunload', handleBeforeUnload);
+                window.addEventListener('beforeunload', handleBeforeUnload);
+                
+            } catch (error) {
+                console.error('Error updating online status:', error);
+            }
+        }
+
+        function setupOnlineStatusListener() {
+            if (onlineCheckInterval) {
+                clearInterval(onlineCheckInterval);
+            }
+            
+            onlineCheckInterval = setInterval(async () => {
+                try {
+                    if (currentUser) {
+                        await db.collection('status').doc(currentUser.uid).update({
+                            lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                    
+                    const snapshot = await db.collection('status').get();
+                    const now = new Date();
+                    const newOnlineUsers = {};
+                    let hasChanges = false;
+                    
+                    snapshot.docs.forEach(doc => {
+                        const data = doc.data();
+                        const lastActive = data.lastActive?.toDate ? data.lastActive.toDate() : new Date(data.lastActive);
+                        const isOnline = data.online && (now - lastActive) < 45000;
+                        
+                        newOnlineUsers[doc.id] = {
+                            ...data,
+                            online: isOnline
+                        };
+                        
+                        const oldStatus = onlineUsers[doc.id]?.online || false;
+                        if (oldStatus !== isOnline) {
+                            hasChanges = true;
+                        }
+                    });
+                    
+                    if (Object.keys(onlineUsers).length !== Object.keys(newOnlineUsers).length) {
+                        hasChanges = true;
+                    }
+                    
+                    if (hasChanges) {
+                        onlineUsers = newOnlineUsers;
+                        safeRender();
+                    }
+                } catch (error) {
+                    console.error('Error checking online status:', error);
+                }
+            }, 15000);
+        }
+
+        async function clearOnlineStatus() {
+            if (currentUser) {
+                try {
+                    await db.collection('status').doc(currentUser.uid).update({
+                        online: false,
+                        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch (error) {
+                    console.error('Error clearing online status:', error);
+                }
+            }
+            if (onlineCheckInterval) {
+                clearInterval(onlineCheckInterval);
+                onlineCheckInterval = null;
+            }
+        }
+
+        // ==================== FUNGSI UPLOAD FOTO ====================
+        window.uploadProfilePhotoFromInput = async function(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            if (!file.type.match('image.*')) {
+                showToast('File harus berupa gambar!', 'error');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('Ukuran file maksimal 5MB!', 'error');
+                return;
+            }
+            
+            const preview = document.getElementById('profile-preview');
+            if (preview) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            const progressBar = document.getElementById('upload-progress');
+            const progressBarInner = document.getElementById('upload-progress-bar');
+            if (progressBar) progressBar.classList.add('show');
+            
+            try {
+                const storageRef = storage.ref(`profiles/${currentUser.uid}/${Date.now()}_${file.name}`);
+                const uploadTask = storageRef.put(file);
+                
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        if (progressBarInner) progressBarInner.style.width = progress + '%';
+                    },
+                    (error) => {
+                        console.error('Upload error:', error);
+                        showToast('Gagal upload: ' + error.message, 'error');
+                        if (progressBar) progressBar.classList.remove('show');
+                    },
+                    async () => {
+                        const url = await uploadTask.snapshot.ref.getDownloadURL();
+                        if (progressBar) progressBar.classList.remove('show');
+                        
+                        await currentUser.updateProfile({ photoURL: url });
+                        
+                        if (userRole === 'pembina') {
+                            const teacherQuery = await db.collection('teachers').where('email', '==', currentUser.email).get();
+                            if (!teacherQuery.empty) {
+                                await teacherQuery.docs[0].ref.update({ photo: url });
+                            }
+                        } else {
+                            const memberQuery = await db.collection('members').where('email', '==', currentUser.email).get();
+                            if (!memberQuery.empty) {
+                                await memberQuery.docs[0].ref.update({ photo: url });
+                            }
+                        }
+                        
+                        userData.photo = url;
+                        showToast('Foto profile berhasil diupdate!');
+                    }
+                );
+            } catch (error) {
+                showToast('Gagal upload: ' + error.message, 'error');
+                if (progressBar) progressBar.classList.remove('show');
+            }
+        };
+
+        window.setupProjectPhotoPreview = function() {
+            const input = document.getElementById('project-photo-input');
+            if (!input) return;
+            
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                if (!file.type.match('image.*')) {
+                    showToast('File harus berupa gambar!', 'error');
+                    return;
+                }
+                
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('Ukuran file maksimal 5MB!', 'error');
+                    return;
+                }
+                
+                const preview = document.getElementById('project-preview');
+                const placeholder = document.getElementById('project-placeholder');
+                const progressBar = document.getElementById('project-upload-progress');
+                const progressBarInner = document.getElementById('project-upload-progress-bar');
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    if (placeholder) placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+                
+                if (progressBar) progressBar.classList.add('show');
+                
+                if (currentUser) {
+                    const storageRef = storage.ref(`projects/${currentUser.uid}/${Date.now()}_${file.name}`);
+                    const uploadTask = storageRef.put(file);
+                    
+                    uploadTask.on('state_changed',
+                        (snapshot) => {
+                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            if (progressBarInner) progressBarInner.style.width = progress + '%';
+                        },
+                        (error) => {
+                            console.error('Upload error:', error);
+                            showToast('Gagal upload: ' + error.message, 'error');
+                            if (progressBar) progressBar.classList.remove('show');
+                        },
+                        async () => {
+                            const url = await uploadTask.snapshot.ref.getDownloadURL();
+                            if (progressBar) progressBar.classList.remove('show');
+                            
+                            const urlInput = document.getElementById('project-image');
+                            if (urlInput) urlInput.value = url;
+                            
+                            showToast('Foto siap digunakan!');
+                        }
+                    );
+                }
+            });
+        };
+
+        // ==================== FUNGSI DELETE & EDIT ====================
+        window.deleteProject = async (projectId) => {
+            if (userRole !== 'admin' && userRole !== 'pembina') {
+                showToast('Anda tidak memiliki akses!', 'error');
+                return;
+            }
+            
+            const result = await Swal.fire({
+                title: 'Hapus Proyek?',
+                text: 'Data yang dihapus tidak dapat dikembalikan!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                background: '#1a1f35',
+                color: '#fff'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await db.collection('projects').doc(projectId).delete();
+                    await loadProjects();
+                    showToast('Proyek berhasil dihapus');
+                    safeRender();
+                } catch (error) {
+                    showToast('Gagal menghapus: ' + error.message, 'error');
+                }
+            }
+        };
+
+        window.editProject = (project) => {
+            selectedProject = project;
+            showEditProjectModal = true;
+            renderMainContent();
+        };
+
+        window.updateProject = async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('edit-project-name').value;
+            const team = document.getElementById('edit-project-team').value;
+            const description = document.getElementById('edit-project-desc').value;
+            const members = parseInt(document.getElementById('edit-project-members').value);
+            const status = document.getElementById('edit-project-status').value;
+            
+            try {
+                await db.collection('projects').doc(selectedProject.id).update({
+                    name,
+                    team,
+                    description,
+                    members,
+                    status,
+                    updatedAt: new Date()
+                });
+                
+                showEditProjectModal = false;
+                selectedProject = null;
+                await loadProjects();
+                showToast('Proyek berhasil diupdate');
+                safeRender();
+            } catch (error) {
+                showToast('Gagal update: ' + error.message, 'error');
+            }
+        };
+
+        window.deleteSchedule = async (scheduleId) => {
+            if (userRole !== 'admin' && userRole !== 'pembina') {
+                showToast('Anda tidak memiliki akses!', 'error');
+                return;
+            }
+            
+            const result = await Swal.fire({
+                title: 'Hapus Jadwal?',
+                text: 'Data yang dihapus tidak dapat dikembalikan!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                background: '#1a1f35',
+                color: '#fff'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await db.collection('schedules').doc(scheduleId).delete();
+                    await loadSchedules();
+                    showToast('Jadwal berhasil dihapus');
+                    safeRender();
+                } catch (error) {
+                    showToast('Gagal menghapus: ' + error.message, 'error');
+                }
+            }
+        };
+
+        window.editSchedule = (schedule) => {
+            selectedSchedule = schedule;
+            showEditScheduleModal = true;
+            renderMainContent();
+        };
+
+        window.updateSchedule = async (e) => {
+            e.preventDefault();
+            
+            const day = document.getElementById('edit-schedule-day').value;
+            const time = document.getElementById('edit-schedule-time').value;
+            const activity = document.getElementById('edit-schedule-activity').value;
+            const instructor = document.getElementById('edit-schedule-instructor').value;
+            
+            try {
+                await db.collection('schedules').doc(selectedSchedule.id).update({
+                    day,
+                    time,
+                    activity,
+                    instructor,
+                    updatedAt: new Date()
+                });
+                
+                showEditScheduleModal = false;
+                selectedSchedule = null;
+                await loadSchedules();
+                showToast('Jadwal berhasil diupdate');
+                safeRender();
+            } catch (error) {
+                showToast('Gagal update: ' + error.message, 'error');
+            }
+        };
+
+        window.deleteTeacher = async (teacherId) => {
+            if (userRole !== 'admin') {
+                showToast('Hanya admin yang bisa menghapus pembina!', 'error');
+                return;
+            }
+            
+            const result = await Swal.fire({
+                title: 'Hapus Pembina?',
+                text: 'Data yang dihapus tidak dapat dikembalikan!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                background: '#1a1f35',
+                color: '#fff'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await db.collection('teachers').doc(teacherId).delete();
+                    await loadTeachers();
+                    showToast('Pembina berhasil dihapus');
+                    safeRender();
+                } catch (error) {
+                    showToast('Gagal menghapus: ' + error.message, 'error');
+                }
+            }
+        };
+
+        window.editTeacher = (teacher) => {
+            selectedTeacher = teacher;
+            showEditTeacherModal = true;
+            renderMainContent();
+        };
+
+        window.updateTeacher = async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('edit-teacher-name').value;
+            const role = document.getElementById('edit-teacher-role').value;
+            const bio = document.getElementById('edit-teacher-bio').value;
+            const expertiseStr = document.getElementById('edit-teacher-expertise').value;
+            
+            const expertise = expertiseStr.split(',').map(s => s.trim());
+            
+            try {
+                await db.collection('teachers').doc(selectedTeacher.id).update({
+                    name,
+                    role,
+                    bio,
+                    expertise,
+                    updatedAt: new Date()
+                });
+                
+                showEditTeacherModal = false;
+                selectedTeacher = null;
+                await loadTeachers();
+                showToast('Pembina berhasil diupdate');
+                safeRender();
+            } catch (error) {
+                showToast('Gagal update: ' + error.message, 'error');
+            }
+        };
+
+        window.deleteMember = async (memberId) => {
+            if (userRole !== 'admin' && userRole !== 'pembina') {
+                showToast('Anda tidak memiliki akses!', 'error');
+                return;
+            }
+            
+            const result = await Swal.fire({
+                title: 'Hapus Anggota?',
+                text: 'Data yang dihapus tidak dapat dikembalikan!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                background: '#1a1f35',
+                color: '#fff'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await db.collection('members').doc(memberId).delete();
+                    
+                    const statusRef = db.collection('status').doc(memberId);
+                    const statusDoc = await statusRef.get();
+                    if (statusDoc.exists) {
+                        await statusRef.delete();
+                    }
+                    
+                    const attendanceSnapshot = await db.collection('attendance')
+                        .where('userId', '==', memberId)
+                        .get();
+                    
+                    const batch = db.batch();
+                    attendanceSnapshot.docs.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    await batch.commit();
+                    
+                    await loadMembers();
+                    await loadAttendanceHistory();
+                    
+                    showToast('Anggota berhasil dihapus');
+                    safeRender();
+                } catch (error) {
+                    console.error('Error deleting member:', error);
+                    showToast('Gagal menghapus: ' + error.message, 'error');
+                }
+            }
+        };
+
+        // ==================== HAPUS DATA ABSENSI ====================
+        window.deleteAttendance = async (attendanceId) => {
+            if (userRole !== 'admin' && userRole !== 'pembina') {
+                showToast('Anda tidak memiliki akses!', 'error');
+                return;
+            }
+            
+            const result = await Swal.fire({
+                title: 'Hapus Data Absensi?',
+                text: 'Data yang dihapus tidak dapat dikembalikan!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                background: '#1a1f35',
+                color: '#fff'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const attendanceDoc = await db.collection('attendance').doc(attendanceId).get();
+                    const attendanceData = attendanceDoc.data();
+                    
+                    await db.collection('attendance').doc(attendanceId).delete();
+                    
+                    if (attendanceData && attendanceData.userId && !attendanceData.userId.startsWith('manual_')) {
+                        try {
+                            const memberRef = db.collection('members').doc(attendanceData.userId);
+                            await memberRef.update({
+                                totalAttendance: firebase.firestore.FieldValue.increment(-1)
+                            });
+                        } catch (err) {
+                            console.log('Member not found, skipping update');
+                        }
+                    }
+                    
+                    await loadAttendanceHistory();
+                    await loadTodayAttendance();
+                    
+                    showToast('Data absensi berhasil dihapus');
+                    safeRender();
+                } catch (error) {
+                    console.error('Error deleting attendance:', error);
+                    showToast('Gagal menghapus: ' + error.message, 'error');
+                }
+            }
+        };
+
+        // ==================== EXPORT EXCEL ====================
+        window.exportAttendanceToExcel = function() {
+            try {
+                if (typeof XLSX === 'undefined') {
+                    showToast('Library Excel tidak tersedia', 'error');
+                    return;
+                }
+                
+                if (attendanceHistory.length === 0) {
+                    showToast('Tidak ada data untuk di-export', 'warning');
+                    return;
+                }
+                
+                const exportData = attendanceHistory.map(a => ({
+                    'Tanggal': a.date || '-',
+                    'Hari': a.day || moment(a.date).format('dddd') || '-',
+                    'Jam': a.time || '-',
+                    'Nama': a.name || '-',
+                    'Kelas': a.class || '-',
+                    'Email': a.email || '-'
+                }));
+
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.json_to_sheet(exportData);
+                
+                const wscols = [
+                    {wch: 12}, {wch: 10}, {wch: 8}, {wch: 25}, {wch: 15}, {wch: 30}
+                ];
+                ws['!cols'] = wscols;
+                
+                XLSX.utils.book_append_sheet(wb, ws, "Riwayat Absensi");
+                XLSX.writeFile(wb, `riwayat_absensi_${moment().format('YYYY-MM-DD_HH-mm')}.xlsx`);
+                
+                showToast(`Berhasil export ${exportData.length} data absensi`);
+            } catch (error) {
+                console.error('Error exporting:', error);
+                showToast('Gagal export data: ' + error.message, 'error');
+            }
+        };
+
+        // ==================== FUNGSI ABSENSI ====================
+        window.submitAttendance = async function() {
+            if (!currentUser) {
+                showToast('Silakan login terlebih dahulu', 'error');
+                return;
+            }
+            
+            try {
+                const select = document.getElementById('attendance-member-select');
+                const manualName = document.getElementById('attendance-manual-name')?.value.trim();
+                const manualClass = document.getElementById('attendance-manual-class')?.value.trim();
+                
+                let userId, name, className, photo;
+                
+                if (select && select.value) {
+                    const selectedOption = select.options[select.selectedIndex];
+                    userId = select.value;
+                    name = selectedOption.getAttribute('data-name');
+                    className = selectedOption.getAttribute('data-class') || '';
+                    photo = selectedOption.getAttribute('data-photo') || `https://ui-avatars.com/api/?name=${name}&background=00d4ff&color=fff`;
+                } 
+                else if (manualName) {
+                    name = manualName;
+                    className = manualClass || 'Kelas tidak diisi';
+                    userId = 'manual_' + Date.now();
+                    photo = `https://ui-avatars.com/api/?name=${name}&background=00d4ff&color=fff`;
+                } 
+                else {
+                    showToast('Pilih anggota atau isi nama manual', 'warning');
+                    return;
+                }
+                
+                const today = moment().format('YYYY-MM-DD');
+                const now = moment().format('HH:mm');
+                const hari = moment().format('dddd');
+                
+                if (userId && !userId.startsWith('manual_')) {
+                    const existing = await db.collection('attendance')
+                        .where('userId', '==', userId)
+                        .where('date', '==', today)
+                        .get();
+                    
+                    if (!existing.empty) {
+                        showToast('Anggota ini sudah absen hari ini', 'error');
+                        return;
+                    }
+                }
+                
+                const attendanceData = {
+                    userId: userId,
+                    name: name,
+                    email: currentUser.email || '',
+                    photo: photo,
+                    class: className,
+                    date: today,
+                    day: hari,
+                    time: now,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    submittedBy: currentUser.uid,
+                    submittedByName: currentUser.displayName || currentUser.email
+                };
+                
+                console.log('📤 Mencoba menyimpan:', attendanceData);
+                
+                const docRef = await db.collection('attendance').add(attendanceData);
+                console.log('✅ BERHASIL! ID:', docRef.id);
+                
+                if (select && select.value && !userId.startsWith('manual_')) {
+                    try {
+                        const memberRef = db.collection('members').doc(userId);
+                        await memberRef.update({
+                            totalAttendance: firebase.firestore.FieldValue.increment(1),
+                            lastAttendance: today
+                        });
+                    } catch (err) {
+                        console.log('Member not found, skipping update');
+                    }
+                }
+                
+                if (select) select.value = '';
+                if (document.getElementById('attendance-manual-name')) {
+                    document.getElementById('attendance-manual-name').value = '';
+                }
+                if (document.getElementById('attendance-manual-class')) {
+                    document.getElementById('attendance-manual-class').value = '';
+                }
+                
+                await loadAttendanceHistory();
+                await loadTodayAttendance();
+                
+                showToast('Absensi berhasil untuk ' + name);
+                safeRender();
+                
+            } catch (error) {
+                console.error('❌ ERROR DETAIL:', error);
+                showToast('Gagal absen: ' + error.message, 'error');
+            }
+        };
+
+        // ==================== GRAFIK KEHADIRAN ====================
+        function renderAttendanceChart() {
+            const chartContainer = document.getElementById('attendance-chart-container');
+            if (!chartContainer) return;
+            
+            const monthlyData = {};
+            attendanceHistory.forEach(a => {
+                const month = moment(a.date).format('MMMM YYYY');
+                monthlyData[month] = (monthlyData[month] || 0) + 1;
+            });
+            
+            const labels = Object.keys(monthlyData).slice(-6);
+            const data = Object.values(monthlyData).slice(-6);
+            
+            if (attendanceChart) {
+                attendanceChart.destroy();
+            }
+            
+            const ctx = document.getElementById('attendance-chart').getContext('2d');
+            attendanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Jumlah Kehadiran',
+                        data: data,
+                        borderColor: '#00d4ff',
+                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#fff' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { color: '#fff' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { color: '#fff', maxRotation: 45 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ==================== CETAK SERTIFIKAT ====================
+        window.printCertificate = async function(memberId) {
+            if (!currentUser) {
+                showToast('Silakan login dulu', 'error');
+                return;
+            }
+            
+            const member = members.find(m => m.id === memberId) || userData;
+            if (!member) {
+                showToast('Data anggota tidak ditemukan', 'error');
+                return;
+            }
+            
+            const totalHadir = attendanceHistory.filter(a => a.userId === member.id).length;
+            
+            Swal.fire({
+                title: 'Membuat Sertifikat...',
+                html: 'Mohon tunggu',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            try {
+                const template = document.getElementById('certificate-template');
+                template.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <img src="https://ui-avatars.com/api/?name=SMK+TI+BALI+GLOBAL&background=00d4ff&color=fff&size=200" 
+                             style="width: 150px; margin-bottom: 20px;">
+                        
+                        <h1 style="font-size: 48px; color: #0a5cff; margin: 20px 0;">SERTIFIKAT KEHADIRAN</h1>
+                        
+                        <p style="font-size: 18px; color: #666;">Diberikan kepada:</p>
+                        <h2 style="font-size: 36px; color: #000; margin: 20px 0;">${member.name}</h2>
+                        
+                        <p style="font-size: 18px; color: #666;">Kelas: ${member.class || '-'}</p>
+                        <p style="font-size: 18px; color: #666;">Sebagai anggota aktif</p>
+                        
+                        <div style="margin: 30px 0; padding: 20px; background: #f5f5f5; border-radius: 10px;">
+                            <p style="font-size: 24px; color: #00d4ff; font-weight: bold;">${totalHadir} Kali Hadir</p>
+                            <p style="font-size: 16px; color: #666;">Periode: ${moment().format('MMMM YYYY')}</p>
+                        </div>
+                        
+                        <div style="margin-top: 50px; display: flex; justify-content: space-around;">
+                            <div>
+                                <p style="border-top: 2px solid #000; width: 200px; margin: 0 auto; padding-top: 10px;">
+                                    Pembina Ekskul
+                                </p>
+                            </div>
+                            <div>
+                                <p style="border-top: 2px solid #000; width: 200px; margin: 0 auto; padding-top: 10px;">
+                                    Ketua Ekskul
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-top: 40px; font-size: 14px; color: #999;">
+                            ${ekstraData.school}<br>
+                            ${moment().format('DD MMMM YYYY')}
+                        </p>
+                    </div>
+                `;
+                
+                const canvas = await html2canvas(template);
+                const imgData = canvas.toDataURL('image/png');
+                
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'px',
+                    format: [800, 600]
+                });
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, 800, 600);
+                pdf.save(`Sertifikat_${member.name.replace(/ /g, '_')}.pdf`);
+                
+                Swal.close();
+                showToast('Sertifikat berhasil dibuat!');
+                
+            } catch (error) {
+                console.error('Error creating certificate:', error);
+                Swal.fire('Error', 'Gagal membuat sertifikat', 'error');
+            }
+        };
+
+        // ==================== NOTIFIKASI PUSH ====================
+        async function requestNotificationPermission() {
+            if (!('Notification' in window)) {
+                console.log('Browser tidak mendukung notifikasi');
+                return;
+            }
+            
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    console.log('Notifikasi diizinkan');
+                    
+                    if (messaging) {
+                        const token = await messaging.getToken();
+                        console.log('FCM Token:', token);
+                        
+                        if (currentUser) {
+                            await db.collection('notificationTokens').doc(currentUser.uid).set({
+                                token: token,
+                                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error request notification permission:', error);
+            }
+        }
+
+        function showNotification(title, options = {}) {
+            if (!('Notification' in window)) {
+                console.log('Notifikasi tidak didukung');
+                return;
+            }
+            
+            if (Notification.permission === 'granted') {
+                try {
+                    const notification = new Notification(title, {
+                        icon: options.icon || 'https://ui-avatars.com/api/?name=Robotik&background=00d4ff&color=fff',
+                        body: options.body || 'Ada informasi baru dari ekskul robotik',
+                        ...options
+                    });
+                    
+                    notification.onclick = function() {
+                        window.focus();
+                        if (options.url) {
+                            window.location.href = options.url;
+                        }
+                    };
+                    
+                    return notification;
+                } catch (error) {
+                    console.error('Error showing notification:', error);
+                }
+            }
+        }
+
+        // ==================== HELPER FUNCTIONS ====================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = 'fa-check-circle';
+            if (type === 'error') icon = 'fa-exclamation-circle';
+            if (type === 'warning') icon = 'fa-exclamation-triangle';
+            
+            toast.innerHTML = `
+                <i class="fas ${icon} text-xl" style="color: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#f59e0b'}"></i>
+                <div class="flex-1">
+                    <p class="font-medium">${message}</p>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function safeRender() {
+            const now = Date.now();
+            if (now - lastRenderTime > RENDER_THROTTLE) {
+                lastRenderTime = now;
+                requestAnimationFrame(() => {
+                    renderMainContent();
+                });
+            }
+        }
+
+        function initializeAds() {}
+
+        // ==================== RENDER FUNCTIONS ====================
+        function renderMainContent() {
+            const app = document.getElementById('app');
+            
+            app.innerHTML = `
+                <!-- Navbar -->
+                <nav class="glass-effect fixed w-full top-0 z-40 px-4 sm:px-6 py-3" data-aos="fade-down">
+                    <div class="max-w-7xl mx-auto flex justify-between items-center">
+                        <div class="flex items-center space-x-2 sm:space-x-3">
+                            <span class="text-3xl sm:text-4xl floating">${ekstraData.logo}</span>
+                            <div class="hidden sm:block">
+                                <h1 class="text-lg sm:text-xl font-bold roboto-font neon-text">${ekstraData.name}</h1>
+                                <p class="text-xs text-gray-400">${ekstraData.school}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="hidden md:flex items-center space-x-6">
+                            <button onclick="navigateTo('home')" class="hover:text-blue-400 transition ${currentPage === 'home' ? 'text-blue-400' : ''}">Home</button>
+                            <button onclick="navigateTo('about')" class="hover:text-blue-400 transition ${currentPage === 'about' ? 'text-blue-400' : ''}">Tentang</button>
+                            <button onclick="navigateTo('teachers')" class="hover:text-blue-400 transition ${currentPage === 'teachers' ? 'text-blue-400' : ''}">Pembina</button>
+                            <button onclick="navigateTo('members')" class="hover:text-blue-400 transition ${currentPage === 'members' ? 'text-blue-400' : ''}">Anggota</button>
+                            <button onclick="navigateTo('projects')" class="hover:text-blue-400 transition ${currentPage === 'projects' ? 'text-blue-400' : ''}">Proyek</button>
+                            <button onclick="navigateTo('attendance')" class="hover:text-blue-400 transition ${currentPage === 'attendance' ? 'text-blue-400' : ''}">Absensi</button>
+                            <button onclick="navigateTo('schedule')" class="hover:text-blue-400 transition ${currentPage === 'schedule' ? 'text-blue-400' : ''}">Jadwal</button>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2 sm:space-x-4">
+                            <div class="relative">
+                                <button onclick="toggleNotificationPanel()" class="relative p-2 hover:bg-white/10 rounded-full">
+                                    <i class="fas fa-bell text-lg sm:text-xl"></i>
+                                    ${unreadCount > 0 ? `
+                                        <span class="notification-badge">${unreadCount > 9 ? '9+' : unreadCount}</span>
+                                    ` : ''}
+                                </button>
+                            </div>
+                            
+                            ${currentUser ? `
+                                <div class="relative group">
+                                    <div class="flex items-center space-x-2 cursor-pointer">
+                                        <img src="${userData?.photo || currentUser.photoURL || 'https://ui-avatars.com/api/?name=' + (userData?.name || 'User')}" 
+                                             class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-blue-400">
+                                        ${userRole === 'admin' ? '<span class="admin-badge">ADMIN</span>' : ''}
+                                        ${userRole === 'pembina' ? '<span class="admin-badge" style="background: linear-gradient(45deg, #00d4ff, #0a5cff);">PEMBINA</span>' : ''}
+                                    </div>
+                                    <div class="absolute right-0 mt-2 w-48 glass-card hidden group-hover:block p-2 z-50">
+                                        <div class="p-2 border-b border-white/10">
+                                            <p class="font-semibold text-sm">${userData?.name || currentUser.displayName}</p>
+                                            <p class="text-xs text-gray-400">${userData?.class || 'Anggota'}</p>
+                                        </div>
+                                        <button onclick="showEditProfile()" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm">
+                                            <i class="fas fa-user-edit mr-2"></i>Edit Profile
+                                        </button>
+                                        
+                                        ${(userRole === 'admin' || userRole === 'pembina') ? `
+                                            <div class="border-t border-white/10 my-1"></div>
+                                            <p class="text-xs text-gray-400 px-2 py-1">MANAJEMEN</p>
+                                            <button onclick="showAddProjectModal = true; renderMainContent()" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm text-green-400">
+                                                <i class="fas fa-plus-circle mr-2"></i>Tambah Proyek
+                                            </button>
+                                            <button onclick="showAddScheduleModal = true; renderMainContent()" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm text-blue-400">
+                                                <i class="fas fa-calendar-plus mr-2"></i>Tambah Jadwal
+                                            </button>
+                                            <button onclick="showAddNotificationModal = true; renderMainContent()" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm text-yellow-400">
+                                                <i class="fas fa-bell mr-2"></i>Buat Notifikasi
+                                            </button>
+                                            <button onclick="showAddTeacherModal = true; renderMainContent()" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm text-purple-400">
+                                                <i class="fas fa-chalkboard-teacher mr-2"></i>Tambah Pembina
+                                            </button>
+                                        ` : ''}
+                                        
+                                        <div class="border-t border-white/10 my-1"></div>
+                                        <button onclick="logout()" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm text-red-400">
+                                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                        </button>
+                                    </div>
+                                </div>
+                            ` : `
+                                <button onclick="toggleLoginModal()" class="gradient-bg px-3 sm:px-4 py-2 rounded-lg text-white text-sm sm:text-base font-semibold hover:scale-105 transition">
+                                    Login
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Main Content -->
+                <main class="pt-16 sm:pt-20 min-h-screen">
+                    ${renderPage()}
+                </main>
+
+                <!-- Footer -->
+                <footer class="glass-effect py-8 px-4 mt-10">
+                    <div class="max-w-6xl mx-auto text-center">
+                        <p class="text-sm text-gray-400">© 2026 Robotik & Pemrograman - SMK TI Bali Global Karangasem</p>
+                    </div>
+                </footer>
+
+                <!-- Modals -->
+                ${showLoginModal ? renderLoginModal() : ''}
+                ${showRegisterModal ? renderRegisterModal() : ''}
+                ${showForgotModal ? renderForgotModal() : ''}
+                ${showEditProfileModal ? renderEditProfileModal() : ''}
+                ${showAddProjectModal ? renderAddProjectModal() : ''}
+                ${showAddScheduleModal ? renderAddScheduleModal() : ''}
+                ${showAddNotificationModal ? renderAddNotificationModal() : ''}
+                ${showAddTeacherModal ? renderAddTeacherModal() : ''}
+                ${showEditProjectModal ? renderEditProjectModal() : ''}
+                ${showEditScheduleModal ? renderEditScheduleModal() : ''}
+                ${showEditTeacherModal ? renderEditTeacherModal() : ''}
+            `;
+
+            updateNotificationPanel();
+            
+            setTimeout(() => {
+                setupProjectPhotoPreview();
+            }, 100);
+            
+            // Render grafik jika di halaman absensi
+            if (currentPage === 'attendance' && (userRole === 'admin' || userRole === 'pembina')) {
+                setTimeout(() => {
+                    renderAttendanceChart();
+                }, 500);
+            }
+        }
+
+        function renderPage() {
+            switch(currentPage) {
+                case 'about': return renderAboutPage();
+                case 'teachers': return renderTeachersPage();
+                case 'members': return renderMembersPage();
+                case 'projects': return renderProjectsPage();
+                case 'attendance': return renderAttendancePage();
+                case 'schedule': return renderSchedulePage();
+                default: return renderHomePage();
+            }
+        }
+
+        // ==================== PAGE RENDERS ====================
+        function renderHomePage() {
+            return `
+                <section class="min-h-[80vh] flex items-center justify-center px-4 py-10">
+                    <div class="text-center max-w-4xl">
+                        <div class="text-6xl sm:text-8xl mb-4 floating" data-aos="zoom-in">${ekstraData.logo}</div>
+                        <h1 class="text-4xl sm:text-6xl md:text-8xl font-bold roboto-font mb-4 neon-text" data-aos="fade-up">
+                            ${ekstraData.name}
+                        </h1>
+                        <p class="text-base sm:text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="100">
+                            ${ekstraData.description}
+                        </p>
+                        
+                        <div class="grid grid-cols-3 gap-3 sm:gap-6 max-w-2xl mx-auto px-4" data-aos="fade-up" data-aos-delay="200">
+                            <div class="glass-card p-3 sm:p-4">
+                                <div class="text-xl sm:text-2xl md:text-3xl font-bold text-blue-400">${members.length}+</div>
+                                <div class="text-xs sm:text-sm">Anggota</div>
+                            </div>
+                            <div class="glass-card p-3 sm:p-4">
+                                <div class="text-xl sm:text-2xl md:text-3xl font-bold text-blue-400">${projects.length}</div>
+                                <div class="text-xs sm:text-sm">Proyek</div>
+                            </div>
+                            <div class="glass-card p-3 sm:p-4">
+                                <div class="text-xl sm:text-2xl md:text-3xl font-bold text-blue-400">${teachers.length}</div>
+                                <div class="text-xs sm:text-sm">Pembina</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="py-10 sm:py-16 px-4">
+                    <div class="max-w-6xl mx-auto">
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 sm:mb-12 roboto-font" data-aos="fade-up">
+                            <span class="neon-text">Teknologi yang Dipelajari</span>
+                        </h2>
+                        
+                        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-3 sm:gap-4">
+                            ${technologies.map((tech, index) => `
+                                <div class="glass-card p-3 sm:p-4 text-center hover-scale" data-aos="fade-up" data-aos-delay="${index * 30}">
+                                    <i class="${tech.icon} text-2xl sm:text-3xl mb-1 sm:mb-2" style="color: ${tech.color}"></i>
+                                    <p class="text-xs sm:text-sm font-semibold">${tech.name}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderAboutPage() {
+            return `
+                <section class="py-10 sm:py-16 px-4">
+                    <div class="max-w-6xl mx-auto">
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 sm:mb-12 roboto-font" data-aos="fade-up">
+                            <span class="neon-text">Tentang Ekskul</span>
+                        </h2>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 sm:gap-8">
+                            <div data-aos="fade-right">
+                                <div class="glass-card p-5 sm:p-6">
+                                    <h3 class="text-xl sm:text-2xl font-bold mb-3">Visi</h3>
+                                    <p class="text-sm sm:text-base text-gray-300">${ekstraData.vision}</p>
+                                </div>
+                                
+                                <div class="glass-card p-5 sm:p-6 mt-4 sm:mt-6">
+                                    <h3 class="text-xl sm:text-2xl font-bold mb-3">Misi</h3>
+                                    <ul class="space-y-2">
+                                        ${ekstraData.mission.map(m => `
+                                            <li class="flex items-start space-x-2 text-sm sm:text-base">
+                                                <i class="fas fa-check-circle text-blue-400 mt-1 text-sm"></i>
+                                                <span>${m}</span>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div data-aos="fade-left">
+                                <div class="glass-card p-5 sm:p-6">
+                                    <h3 class="text-xl sm:text-2xl font-bold mb-4">Jadwal Latihan</h3>
+                                    <div class="space-y-3">
+                                        ${schedules.length > 0 ? schedules.map(s => `
+                                            <div>
+                                                <div class="flex justify-between items-center p-2 sm:p-3 bg-white/5 rounded-lg text-sm sm:text-base">
+                                                    <span class="font-medium">${s.day}</span>
+                                                    <span class="text-blue-400">${s.time}</span>
+                                                </div>
+                                                <div class="text-xs text-gray-400 mt-1 px-2">${s.activity} - ${s.instructor}</div>
+                                            </div>
+                                        `).join('') : `
+                                            <p class="text-gray-400 text-center py-4">Belum ada jadwal</p>
+                                        `}
+                                    </div>
+                                    
+                                    <h3 class="text-xl sm:text-2xl font-bold mt-6 mb-3">Tempat</h3>
+                                    <p class="text-sm sm:text-base text-gray-300">Lab Komputer 1<br>SMK TI Bali Global Karangasem</p>
+                                    
+                                    <h3 class="text-xl sm:text-2xl font-bold mt-6 mb-3">Gabung Grup WhatsApp</h3>
+                                    <a href="${groupLinks.whatsapp}" target="_blank" class="inline-flex items-center px-6 py-3 bg-green-600 rounded-lg hover:bg-green-700 transition">
+                                        <i class="fab fa-whatsapp text-white text-xl mr-2"></i>
+                                        <span class="text-white font-semibold">Join WhatsApp Group</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderTeachersPage() {
+            return `
+                <section class="py-10 sm:py-16 px-4">
+                    <div class="max-w-6xl mx-auto">
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 sm:mb-12 roboto-font" data-aos="fade-up">
+                            <span class="neon-text">Pembina Ekskul</span>
+                        </h2>
+                        
+                        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                            ${teachers.length > 0 ? teachers.map((teacher, index) => `
+                                <div class="glass-card p-4 sm:p-5 hover-scale relative" data-aos="fade-up" data-aos-delay="${index * 50}">
+                                    ${(userRole === 'admin' || userRole === 'pembina') ? `
+                                        <div class="absolute top-2 right-2 flex space-x-1">
+                                            <button onclick="editTeacher(${JSON.stringify(teacher).replace(/"/g, '&quot;')})" class="action-btn edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button onclick="deleteTeacher('${teacher.id}')" class="action-btn delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    ` : ''}
+                                    <img src="${teacher.photo}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto mb-3 border-3 border-blue-400">
+                                    <h3 class="text-base sm:text-lg font-bold text-center">${teacher.name}</h3>
+                                    <p class="text-xs sm:text-sm text-blue-400 text-center mb-2">${teacher.role}</p>
+                                    <p class="text-xs sm:text-sm text-gray-300 text-center mb-3">${teacher.bio || ''}</p>
+                                    <div class="flex justify-center space-x-1 flex-wrap">
+                                        ${teacher.expertise ? teacher.expertise.map(skill => `
+                                            <span class="text-xs bg-white/10 px-2 py-1 rounded m-1">${skill}</span>
+                                        `).join('') : ''}
+                                    </div>
+                                </div>
+                            `).join('') : `
+                                <p class="text-gray-400 text-center col-span-3">Belum ada data pembina</p>
+                            `}
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderMembersPage() {
+            return `
+                <section class="py-10 sm:py-16 px-4">
+                    <div class="max-w-6xl mx-auto">
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 sm:mb-12 roboto-font" data-aos="fade-up">
+                            <span class="neon-text">Anggota Ekskul</span>
+                        </h2>
+                        
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+                            ${members.length > 0 ? members.map((member, index) => {
+                                const isOnline = onlineUsers[member.id]?.online || false;
+                                
+                                return `
+                                    <div class="glass-card p-3 sm:p-4 hover-scale relative" data-aos="fade-up" data-aos-delay="${index * 30}">
+                                        ${(userRole === 'admin' || userRole === 'pembina') ? `
+                                            <div class="absolute top-2 right-2 flex space-x-1">
+                                                <button onclick="deleteMember('${member.id}')" class="action-btn delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        ` : ''}
+                                        <div class="relative">
+                                            <img src="${member.photo}" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-2 border-2 border-blue-400">
+                                            <div class="online-dot ${isOnline ? 'online' : 'offline'}"></div>
+                                        </div>
+                                        <h3 class="font-bold text-center text-sm sm:text-base">${member.name}</h3>
+                                        <p class="text-xs text-blue-400 text-center">${member.class || '-'}</p>
+                                        <p class="text-xs text-gray-400 text-center mb-2">${member.role || 'Anggota'}</p>
+                                        ${isOnline ? 
+                                            '<p class="text-xs text-green-400 text-center">● Online</p>' : 
+                                            '<p class="text-xs text-gray-500 text-center">○ Offline</p>'
+                                        }
+                                    </div>
+                                `;
+                            }).join('') : `
+                                <p class="text-gray-400 text-center col-span-4">Belum ada anggota</p>
+                            `}
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderProjectsPage() {
+            return `
+                <section class="py-10 sm:py-16 px-4">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="flex justify-between items-center mb-8">
+                            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold roboto-font" data-aos="fade-up">
+                                <span class="neon-text">Proyek Robotik</span>
+                            </h2>
+                            ${(userRole === 'admin' || userRole === 'pembina') ? `
+                                <button onclick="showAddProjectModal = true; renderMainContent()" 
+                                    class="gradient-bg px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base">
+                                    <i class="fas fa-plus mr-1"></i>Tambah Proyek
+                                </button>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                            ${projects.length > 0 ? projects.map((project, index) => `
+                                <div class="glass-card overflow-hidden hover-scale relative" data-aos="fade-up" data-aos-delay="${index * 50}">
+                                    ${(userRole === 'admin' || userRole === 'pembina') ? `
+                                        <div class="absolute top-2 right-2 flex space-x-1 z-10">
+                                            <button onclick="editProject(${JSON.stringify(project).replace(/"/g, '&quot;')})" class="action-btn edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button onclick="deleteProject('${project.id}')" class="action-btn delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    ` : ''}
+                                    <img src="${project.image || 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e'}" class="w-full h-36 sm:h-40 object-cover">
+                                    <div class="p-3 sm:p-4">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h3 class="text-sm sm:text-base font-bold">${project.name}</h3>
+                                            <span class="text-xs ${project.status === 'Selesai' ? 'bg-green-600' : 'bg-yellow-600'} px-2 py-1 rounded">
+                                                ${project.status || 'Development'}
+                                            </span>
+                                        </div>
+                                        <p class="text-xs text-gray-400 mb-2">Tim: ${project.team || '-'}</p>
+                                        <p class="text-xs sm:text-sm mb-2">${project.description || ''}</p>
+                                        <p class="text-xs text-gray-400"><i class="fas fa-users mr-1"></i>${project.members || 0} anggota</p>
+                                    </div>
+                                </div>
+                            `).join('') : `
+                                <p class="text-gray-400 text-center col-span-3 py-10">
+                                    Belum ada proyek. 
+                                    ${(userRole === 'admin' || userRole === 'pembina') ? 
+                                        'Klik tombol Tambah Proyek untuk memulai.' : 
+                                        'Hubungi admin untuk menambahkan proyek.'}
+                                </p>
+                            `}
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderAttendancePage() {
+            const today = moment().format('YYYY-MM-DD');
+            const todayAttendance = attendanceHistory.filter(a => a.date === today);
+            const totalHadirHariIni = todayAttendance.length;
+            const myAttendance = currentUser ? 
+                attendanceHistory.filter(a => a.userId === currentUser.uid).length : 0;
+            
+            const availableMembers = currentUser ? members.filter(m => 
+                !todayAttendance.some(a => a.userId === m.id)
+            ) : [];
+            
+            return `
+                <section class="py-10 sm:py-16 px-4">
+                    <div class="max-w-6xl mx-auto">
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 roboto-font" data-aos="fade-up">
+                            <span class="neon-text">Absensi Kehadiran</span>
+                        </h2>
+                        
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-6" data-aos="fade-up">
+                            <div class="glass-card p-2 sm:p-4 text-center">
+                                <div class="text-lg sm:text-2xl md:text-3xl font-bold text-blue-400">${totalHadirHariIni}</div>
+                                <div class="text-xs sm:text-sm">Hadir Hari Ini</div>
+                            </div>
+                            <div class="glass-card p-2 sm:p-4 text-center">
+                                <div class="text-lg sm:text-2xl md:text-3xl font-bold text-blue-400">${attendanceHistory.length}</div>
+                                <div class="text-xs sm:text-sm">Total Absensi</div>
+                            </div>
+                            <div class="glass-card p-2 sm:p-4 text-center">
+                                <div class="text-lg sm:text-2xl md:text-3xl font-bold text-blue-400">${members.length}</div>
+                                <div class="text-xs sm:text-sm">Total Anggota</div>
+                            </div>
+                            <div class="glass-card p-2 sm:p-4 text-center">
+                                <div class="text-lg sm:text-2xl md:text-3xl font-bold text-blue-400">${myAttendance}</div>
+                                <div class="text-xs sm:text-sm">Absensi Saya</div>
+                            </div>
+                        </div>
+                        
+                        ${(userRole === 'admin' || userRole === 'pembina') ? `
+                            <div class="glass-card p-4 sm:p-6 mb-6" data-aos="fade-up">
+                                <div class="chart-container" id="attendance-chart-container">
+                                    <canvas id="attendance-chart"></canvas>
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="glass-card p-4 sm:p-6 mb-6" data-aos="fade-up">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-calendar-alt text-3xl text-blue-400 mb-2"></i>
+                                <h3 class="text-base sm:text-lg font-bold">${moment().format('dddd, DD MMMM YYYY')}</h3>
+                            </div>
+                            
+                            ${currentUser ? `
+                                ${availableMembers.length > 0 ? `
+                                    <div class="space-y-4">
+                                        <p class="text-sm text-gray-300">Pilih nama untuk absen:</p>
+                                        
+                                        <select id="attendance-member-select" class="w-full p-3 rounded-lg text-sm">
+                                            <option value="">-- Pilih Anggota --</option>
+                                            ${availableMembers.map(m => `
+                                                <option value="${m.id}" data-name="${m.name}" data-class="${m.class || ''}" data-photo="${m.photo}">
+                                                    ${m.name} - ${m.class || 'Kelas belum diisi'}
+                                                </option>
+                                            `).join('')}
+                                        </select>
+                                        
+                                        <div class="text-center text-xs text-gray-400">- atau -</div>
+                                        
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            <input type="text" id="attendance-manual-name" placeholder="Nama (jika tidak ada di daftar)" class="w-full p-3 rounded-lg text-sm">
+                                            <input type="text" id="attendance-manual-class" placeholder="Kelas" class="w-full p-3 rounded-lg text-sm">
+                                        </div>
+                                        
+                                        <button onclick="submitAttendance()" class="w-full gradient-bg p-3 sm:p-4 rounded-lg font-semibold hover:scale-105 transition text-sm sm:text-base">
+                                            <i class="fas fa-check-circle mr-2"></i>Konfirmasi Kehadiran
+                                        </button>
+                                    </div>
+                                ` : `
+                                    <div class="text-center p-3 sm:p-4 bg-green-600/20 rounded-lg">
+                                        <i class="fas fa-check-circle text-green-400 text-xl sm:text-2xl mb-2"></i>
+                                        <p class="text-green-400 text-sm sm:text-base">Semua anggota sudah absen hari ini!</p>
+                                    </div>
+                                `}
+                            ` : `
+                                <div class="text-center p-4 sm:p-6 bg-yellow-600/20 rounded-lg">
+                                    <i class="fas fa-lock text-yellow-400 text-3xl mb-3"></i>
+                                    <p class="text-yellow-400 text-base sm:text-lg mb-3">Silakan login untuk absensi</p>
+                                    <button onclick="toggleLoginModal()" class="bg-yellow-600 hover:bg-yellow-700 px-6 py-3 rounded-lg text-sm sm:text-base font-semibold">
+                                        <i class="fas fa-sign-in-alt mr-2"></i>Login Sekarang
+                                    </button>
+                                </div>
+                            `}
+                        </div>
+                        
+                        <div class="glass-card p-4 sm:p-6 mb-6" data-aos="fade-up" data-aos-delay="50">
+                            <h3 class="text-base sm:text-lg font-bold mb-3">📋 Daftar Hadir Hari Ini</h3>
+                            <div class="space-y-2 max-h-60 overflow-y-auto">
+                                ${todayAttendance.length > 0 ? todayAttendance.map(a => `
+                                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+                                        <div class="flex items-center space-x-2">
+                                            <img src="${a.photo}" class="w-8 h-8 rounded-full" onerror="this.src='https://ui-avatars.com/api/?name=${a.name}&background=00d4ff&color=fff'">
+                                            <div>
+                                                <p class="font-semibold text-sm">${a.name}</p>
+                                                <p class="text-xs text-gray-400">${a.class || '-'} • ${a.time}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-1">
+                                            ${(userRole === 'admin' || userRole === 'pembina') ? `
+                                                <button onclick="printCertificate('${a.userId}')" class="text-blue-400 hover:text-blue-300 p-2" title="Cetak Sertifikat">
+                                                    <i class="fas fa-certificate"></i>
+                                                </button>
+                                                <button onclick="deleteAttendance('${a.id}')" class="text-red-400 hover:text-red-300 p-2">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            ` : ''}
+                                        </div>
+                                    </div>
+                                `).join('') : `
+                                    <p class="text-gray-400 text-center py-4 text-sm">Belum ada yang hadir hari ini</p>
+                                `}
+                            </div>
+                        </div>
+                        
+                        <div class="glass-card p-4 sm:p-6" data-aos="fade-up" data-aos-delay="100">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-base sm:text-lg font-bold">📅 Riwayat Absensi Lengkap</h3>
+                                ${(userRole === 'admin' || userRole === 'pembina') ? `
+                                    <button onclick="exportAttendanceToExcel()" class="bg-green-600 hover:bg-green-700 px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm flex items-center">
+                                        <i class="fas fa-download mr-1"></i> Export
+                                    </button>
+                                ` : ''}
+                            </div>
+                            
+                            <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                                <table class="attendance-table min-w-[500px] sm:min-w-full">
+                                    <thead>
+                                        <tr>
+                                            <th class="p-2 sm:p-3 text-xs sm:text-sm">Tanggal</th>
+                                            <th class="p-2 sm:p-3 text-xs sm:text-sm">Hari</th>
+                                            <th class="p-2 sm:p-3 text-xs sm:text-sm">Jam</th>
+                                            <th class="p-2 sm:p-3 text-xs sm:text-sm">Nama</th>
+                                            <th class="p-2 sm:p-3 text-xs sm:text-sm">Kelas</th>
+                                            ${(userRole === 'admin' || userRole === 'pembina') ? `
+                                                <th class="p-2 sm:p-3 text-xs sm:text-sm">Aksi</th>
+                                            ` : ''}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${attendanceHistory.slice(0, 20).map(a => `
+                                            <tr>
+                                                <td class="p-2 sm:p-3 text-xs sm:text-sm">${a.date}</td>
+                                                <td class="p-2 sm:p-3 text-xs sm:text-sm">${moment(a.date).format('dddd')}</td>
+                                                <td class="p-2 sm:p-3 text-xs sm:text-sm">${a.time}</td>
+                                                <td class="p-2 sm:p-3 text-xs sm:text-sm">${a.name}</td>
+                                                <td class="p-2 sm:p-3 text-xs sm:text-sm">${a.class || '-'}</td>
+                                                ${(userRole === 'admin' || userRole === 'pembina') ? `
+                                                    <td class="p-2 sm:p-3 text-xs sm:text-sm">
+                                                        <button onclick="deleteAttendance('${a.id}')" class="text-red-400 hover:text-red-300">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                ` : ''}
+                                            </tr>
+                                        `).join('')}
+                                        ${attendanceHistory.length === 0 ? `
+                                            <tr><td colspan="${(userRole === 'admin' || userRole === 'pembina') ? '6' : '5'}" class="text-center py-4 text-gray-400 text-xs sm:text-sm">Belum ada riwayat absensi</td></tr>
+                                        ` : ''}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            ${attendanceHistory.length > 20 ? `
+                                <div class="text-center mt-4">
+                                    <button onclick="showAttendanceHistoryModal = true; renderMainContent()" class="text-blue-400 hover:text-blue-300 text-xs sm:text-sm">
+                                        Tampilkan semua (${attendanceHistory.length} data)...
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderSchedulePage() {
+            return `
+                <section class="py-10 sm:py-16 px-4">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="flex justify-between items-center mb-8">
+                            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold roboto-font" data-aos="fade-up">
+                                <span class="neon-text">Jadwal Ekskul</span>
+                            </h2>
+                            ${(userRole === 'admin' || userRole === 'pembina') ? `
+                                <button onclick="showAddScheduleModal = true; renderMainContent()" 
+                                    class="gradient-bg px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base">
+                                    <i class="fas fa-plus mr-1"></i>Tambah Jadwal
+                                </button>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="glass-card p-4 sm:p-6" data-aos="fade-up">
+                            <div class="space-y-3">
+                                ${schedules.length > 0 ? schedules.map(s => `
+                                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-3">
+                                                <span class="font-bold text-blue-400 w-16">${s.day}</span>
+                                                <span class="text-sm">${s.time}</span>
+                                            </div>
+                                            <div class="text-sm mt-1">
+                                                <p class="font-semibold">${s.activity}</p>
+                                                <p class="text-xs text-gray-400">Oleh: ${s.instructor}</p>
+                                            </div>
+                                        </div>
+                                        ${(userRole === 'admin' || userRole === 'pembina') ? `
+                                            <div class="flex space-x-1">
+                                                <button onclick="editSchedule(${JSON.stringify(s).replace(/"/g, '&quot;')})" class="action-btn edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button onclick="deleteSchedule('${s.id}')" class="action-btn delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `).join('') : `
+                                    <p class="text-gray-400 text-center py-4">
+                                        Belum ada jadwal. 
+                                        ${(userRole === 'admin' || userRole === 'pembina') ? 
+                                            'Klik tombol Tambah Jadwal untuk menambahkan.' : 
+                                            'Hubungi admin untuk menambahkan jadwal.'}
+                                    </p>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        // ==================== MODAL RENDERS ====================
+        function renderLoginModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleLoginModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl sm:text-2xl font-bold">Login</h3>
+                            <button onclick="toggleLoginModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <button onclick="loginWithGoogle()" class="w-full bg-red-600 text-white p-3 rounded-lg mb-4 hover:bg-red-700 flex items-center justify-center space-x-2 text-sm sm:text-base">
+                            <i class="fab fa-google"></i>
+                            <span>Login dengan Google</span>
+                        </button>
+                        
+                        <div class="relative my-4">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-white/20"></div>
+                            </div>
+                            <div class="relative flex justify-center">
+                                <span class="bg-[#1a1f35] px-4 text-xs sm:text-sm text-gray-400">atau</span>
+                            </div>
+                        </div>
+                        
+                        <form onsubmit="loginWithEmail(event)">
+                            <div class="mb-3">
+                                <input type="email" id="login-email" placeholder="Email" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-4">
+                                <input type="password" id="login-password" placeholder="Password" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <button type="submit" class="w-full gradient-bg p-3 rounded-lg font-semibold text-sm sm:text-base">
+                                Login
+                            </button>
+                        </form>
+                        
+                        <div class="mt-4 text-center space-y-2">
+                            <button onclick="toggleForgotModal()" class="text-xs sm:text-sm text-blue-400 hover:underline">
+                                Lupa Password?
+                            </button>
+                            <p class="text-xs sm:text-sm text-gray-400">
+                                Belum punya akun? 
+                                <button onclick="toggleRegisterModal()" class="text-blue-400 hover:underline">
+                                    Daftar
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRegisterModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleRegisterModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl sm:text-2xl font-bold">Daftar Akun Baru</h3>
+                            <button onclick="toggleRegisterModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <form onsubmit="register(event)">
+                            <div class="mb-3">
+                                <input type="text" id="register-name" placeholder="Nama Lengkap" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="email" id="register-email" placeholder="Email" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <select id="register-class" class="w-full p-3 rounded-lg text-sm" required>
+                                    <option value="">Pilih Kelas</option>
+                                    <option value="X RPL">X RPL</option>
+                                    <option value="X TJKT">X TJKT</option>
+                                    <option value="X AKUNTANSI">X AKUNTANSI</option>
+                                    <option value="X PERHOTELAN">X PERHOTELAN</option>
+                                    <option value="X DKV">X DKV</option>
+                                    <option value="XI RPL">XI RPL</option>
+                                    <option value="XI AKUNTANSI">XI AKUNTANSI</option>
+                                    <option value="XI PERHOTELAN">XI PERHOTELAN</option>
+                                    <option value="XI DKV">XI DKV</option>
+                                    <option value="XI TJKT">XI TJKT</option>
+                                    <option value="XII RPL">XII RPL</option>
+                                    <option value="XII TJKT">XII TJKT</option>
+                                    <option value="XII AKUNTANSI">XII AKUNTANSI</option>
+                                    <option value="XII PERHOTELAN">XII PERHOTELAN</option>
+                                    <option value="XII DKV">XII DKV</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <input type="password" id="register-password" placeholder="Password" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-4">
+                                <input type="password" id="register-confirm" placeholder="Konfirmasi Password" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <button type="submit" class="w-full gradient-bg p-3 rounded-lg font-semibold text-sm sm:text-base">
+                                Daftar
+                            </button>
+                        </form>
+                        
+                        <p class="mt-4 text-center text-xs sm:text-sm text-gray-400">
+                            Sudah punya akun? 
+                            <button onclick="toggleLoginModal()" class="text-blue-400 hover:underline">
+                                Login
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderForgotModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleForgotModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl sm:text-2xl font-bold">Lupa Password</h3>
+                            <button onclick="toggleForgotModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <p class="text-sm text-gray-400 mb-4">Masukkan email untuk reset password.</p>
+                        
+                        <form onsubmit="forgotPassword(event)">
+                            <div class="mb-4">
+                                <input type="email" id="forgot-email" placeholder="Email" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <button type="submit" class="w-full gradient-bg p-3 rounded-lg font-semibold text-sm sm:text-base">
+                                Kirim Reset
+                            </button>
+                        </form>
+                        
+                        <button onclick="toggleLoginModal()" class="mt-4 text-sm text-blue-400 hover:underline">
+                            Kembali ke Login
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderEditProfileModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleEditProfileModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl sm:text-2xl font-bold">Edit Profile</h3>
+                            <button onclick="toggleEditProfileModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <div class="relative inline-block">
+                                <img src="${userData?.photo || currentUser?.photoURL || 'https://ui-avatars.com/api/?name=' + (userData?.name || 'User')}" 
+                                     class="w-24 h-24 rounded-full mx-auto mb-2 border-3 border-blue-400 object-cover"
+                                     id="profile-preview">
+                            </div>
+                            
+                            <div class="mt-3 p-3 bg-white/5 rounded-lg">
+                                <p class="text-xs text-gray-400 mb-2">📁 Upload foto:</p>
+                                <div class="flex gap-2">
+                                    <input type="file" id="profile-file-input" accept="image/*" 
+                                           class="flex-1 text-sm bg-white/10 rounded-lg p-2">
+                                    <button onclick="uploadFromFileInput('profile-file-input', 'profile-preview', (url) => { 
+                                        document.getElementById('profile-url-input').value = url;
+                                        showToast('Foto siap disimpan!');
+                                    })" 
+                                            class="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg text-sm">
+                                        Upload
+                                    </button>
+                                </div>
+                                <div id="upload-progress" class="upload-progress mt-2">
+                                    <div id="upload-progress-bar" class="upload-progress-bar"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3 p-3 bg-white/5 rounded-lg">
+                                <p class="text-xs text-gray-400 mb-2">🔗 URL gambar:</p>
+                                <div class="flex gap-2">
+                                    <input type="url" id="profile-url-input" 
+                                           placeholder="https://raw.githubusercontent.com/username/repo/foto.jpg"
+                                           class="flex-1 p-2 rounded-lg text-sm bg-white/10 border border-white/20 text-white"
+                                           value="${userData?.photo || ''}">
+                                    <button onclick="document.getElementById('profile-preview').src = document.getElementById('profile-url-input').value"
+                                            class="bg-green-600 hover:bg-green-700 px-3 py-2 rounded-lg text-sm">
+                                        Preview
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form onsubmit="updateProfile(event)">
+                            <div class="mb-3">
+                                <label class="block text-xs sm:text-sm mb-1">Nama Lengkap</label>
+                                <input type="text" id="edit-name" value="${userData?.name || currentUser?.displayName || ''}" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="block text-xs sm:text-sm mb-1">Kelas</label>
+                                <select id="edit-class" class="w-full p-3 rounded-lg text-sm">
+                                    <option value="">Pilih Kelas</option>
+                                    <option value="X RPL" ${userData?.class === 'X RPL' ? 'selected' : ''}>X RPL</option>
+                                    <option value="X TJKT" ${userData?.class === 'X TJKT' ? 'selected' : ''}>X TJKT</option>
+                                    <option value="X AKUNTANSI" ${userData?.class === 'X AKUNTANSI' ? 'selected' : ''}>X AKUNTANSI</option>
+                                    <option value="X PERHOTELAN" ${userData?.class === 'X PERHOTELAN' ? 'selected' : ''}>X PERHOTELAN</option>
+                                    <option value="X DKV" ${userData?.class === 'X DKV' ? 'selected' : ''}>X DKV</option>
+                                    <option value="XI RPL" ${userData?.class === 'XI RPL' ? 'selected' : ''}>XI RPL</option>
+                                    <option value="XI TJKT" ${userData?.class === 'XI TJKT' ? 'selected' : ''}>XI TJKT</option>
+                                    <option value="XI AKUNTANSI" ${userData?.class === 'XI AKUNTANSI' ? 'selected' : ''}>XI AKUNTANSI</option>
+                                    <option value="XI PERHOTELAN" ${userData?.class === 'XI PERHOTELAN' ? 'selected' : ''}>XI PERHOTELAN</option>
+                                    <option value="XI DKV" ${userData?.class === 'XI DKV' ? 'selected' : ''}>XI DKV</option>
+                                    <option value="XII RPL" ${userData?.class === 'XII RPL' ? 'selected' : ''}>XII RPL</option>
+                                    <option value="XII TJKT" ${userData?.class === 'XII TJKT' ? 'selected' : ''}>XII TJKT</option>
+                                    <option value="XII AKUNTANSI" ${userData?.class === 'XII AKUNTANSI' ? 'selected' : ''}>XII AKUNTANSI</option>
+                                    <option value="XII PERHOTELAN" ${userData?.class === 'XII PERHOTELAN' ? 'selected' : ''}>XII PERHOTELAN</option>
+                                    <option value="XII DKV" ${userData?.class === 'XII DKV' ? 'selected' : ''}>XII DKV</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-xs sm:text-sm mb-1">Bio (Opsional)</label>
+                                <textarea id="edit-bio" rows="3" class="w-full p-3 rounded-lg text-sm">${userData?.bio || ''}</textarea>
+                            </div>
+                            
+                            <input type="hidden" id="edit-photo" value="${userData?.photo || ''}">
+                            
+                            <button type="submit" class="w-full gradient-bg p-3 rounded-lg font-semibold text-sm sm:text-base">
+                                Simpan Perubahan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAddProjectModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleAddProjectModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl sm:text-2xl font-bold">Tambah Proyek Baru</h3>
+                            <button onclick="toggleAddProjectModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <form onsubmit="addProject(event)">
+                            <div class="mb-3">
+                                <input type="text" id="project-name" placeholder="Nama Proyek" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" id="project-team" placeholder="Nama Tim" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <textarea id="project-desc" rows="3" placeholder="Deskripsi Proyek" class="w-full p-3 rounded-lg text-sm" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <input type="number" id="project-members" placeholder="Jumlah Anggota" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <select id="project-status" class="w-full p-3 rounded-lg text-sm" required>
+                                    <option value="Development">Development</option>
+                                    <option value="Selesai">Selesai</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="block text-xs sm:text-sm mb-1">Foto Proyek</label>
+                                
+                                <div class="photo-preview-container mb-2">
+                                    <img id="project-preview" class="photo-preview" style="display: none;">
+                                    <div class="photo-preview-placeholder" id="project-placeholder">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>Pilih foto atau masukkan URL</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex gap-2 mb-2">
+                                    <input type="file" id="project-photo-input" accept="image/*" 
+                                           class="flex-1 text-sm bg-white/10 rounded-lg p-2">
+                                    <button type="button" onclick="uploadProjectPhoto()"
+                                            class="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg text-sm">
+                                        Upload
+                                    </button>
+                                </div>
+                                
+                                <div id="project-upload-progress" class="upload-progress">
+                                    <div id="project-upload-progress-bar" class="upload-progress-bar"></div>
+                                </div>
+                                
+                                <p class="text-xs text-gray-400 mt-2">Atau masukkan URL gambar:</p>
+                                <div class="flex gap-2 mt-1">
+                                    <input type="url" id="project-image" 
+                                           placeholder="https://raw.githubusercontent.com/..." 
+                                           class="flex-1 p-3 rounded-lg text-sm">
+                                    <button type="button" onclick="previewProjectUrl()"
+                                            class="bg-green-600 hover:bg-green-700 px-3 py-2 rounded-lg text-sm">
+                                        Preview
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="w-full gradient-bg p-3 rounded-lg font-semibold text-sm sm:text-base">
+                                Tambah Proyek
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderEditProjectModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleEditProjectModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl sm:text-2xl font-bold">Edit Proyek</h3>
+                            <button onclick="toggleEditProjectModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <form onsubmit="updateProject(event)">
+                            <div class="mb-3">
+                                <input type="text" id="edit-project-name" value="${selectedProject?.name || ''}" placeholder="Nama Proyek" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" id="edit-project-team" value="${selectedProject?.team || ''}" placeholder="Nama Tim" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <textarea id="edit-project-desc" rows="3" placeholder="Deskripsi Proyek" class="w-full p-3 rounded-lg text-sm" required>${selectedProject?.description || ''}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <input type="number" id="edit-project-members" value="${selectedProject?.members || 0}" placeholder="Jumlah Anggota" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-4">
+                                <select id="edit-project-status" class="w-full p-3 rounded-lg text-sm" required>
+                                    <option value="Development" ${selectedProject?.status === 'Development' ? 'selected' : ''}>Development</option>
+                                    <option value="Selesai" ${selectedProject?.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full gradient-bg p-3 rounded-lg font-semibold text-sm sm:text-base">
+                                Update Proyek
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAddScheduleModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleAddScheduleModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl sm:text-2xl font-bold">Tambah Jadwal</h3>
+                            <button onclick="toggleAddScheduleModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <form onsubmit="addSchedule(event)">
+                            <div class="mb-3">
+                                <select id="schedule-day" class="w-full p-3 rounded-lg text-sm" required>
+                                    <option value="">Pilih Hari</option>
+                                    <option value="Senin">Senin</option>
+                                    <option value="Selasa">Selasa</option>
+                                    <option value="Rabu">Rabu</option>
+                                    <option value="Kamis">Kamis</option>
+                                    <option value="Jumat">Jumat</option>
+                                    <option value="Sabtu">Sabtu</option>
+                                    <option value="Minggu">Minggu</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" id="schedule-time" placeholder="Waktu (contoh: 15:30 - 17:30)" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" id="schedule-activity" placeholder="Kegiatan" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-4">
+                                <input type="text" id="schedule-instructor" placeholder="Pembina" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <button type="submit" class="w-full gradient-bg p-3 rounded-lg font-semibold text-sm sm:text-base">
+                                Tambah Jadwal
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderEditScheduleModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleEditScheduleModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl sm:text-2xl font-bold">Edit Jadwal</h3>
+                            <button onclick="toggleEditScheduleModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <form onsubmit="updateSchedule(event)">
+                            <div class="mb-3">
+                                <select id="edit-schedule-day" class="w-full p-3 rounded-lg text-sm" required>
+                                    <option value="Senin" ${selectedSchedule?.day === 'Senin' ? 'selected' : ''}>Senin</option>
+                                    <option value="Selasa" ${selectedSchedule?.day === 'Selasa' ? 'selected' : ''}>Selasa</option>
+                                    <option value="Rabu" ${selectedSchedule?.day === 'Rabu' ? 'selected' : ''}>Rabu</option>
+                                    <option value="Kamis" ${selectedSchedule?.day === 'Kamis' ? 'selected' : ''}>Kamis</option>
+                                    <option value="Jumat" ${selectedSchedule?.day === 'Jumat' ? 'selected' : ''}>Jumat</option>
+                                    <option value="Sabtu" ${selectedSchedule?.day === 'Sabtu' ? 'selected' : ''}>Sabtu</option>
+                                    <option value="Minggu" ${selectedSchedule?.day === 'Minggu' ? 'selected' : ''}>Minggu</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" id="edit-schedule-time" value="${selectedSchedule?.time || ''}" placeholder="Waktu" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" id="edit-schedule-activity" value="${selectedSchedule?.activity || ''}" placeholder="Kegiatan" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-4">
+                                <input type="text" id="edit-schedule-instructor" value="${selectedSchedule?.instructor || ''}" placeholder="Pembina" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <button type="submit" class="w-full gradient-bg p-3 rounded-lg font-semibold text-sm sm:text-base">
+                                Update Jadwal
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAddNotificationModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleAddNotificationModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl sm:text-2xl font-bold">Buat Notifikasi</h3>
+                            <button onclick="toggleAddNotificationModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <form onsubmit="addNotification(event)">
+                            <div class="mb-3">
+                                <input type="text" id="notif-title" placeholder="Judul Notifikasi" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <textarea id="notif-message" rows="4" placeholder="Isi Notifikasi" class="w-full p-3 rounded-lg text-sm" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <select id="notif-type" class="w-full p-3 rounded-lg text-sm" required>
+                                    <option value="info">Informasi</option>
+                                    <option value="warning">Peringatan</option>
+                                    <option value="success">Pengumuman</option>
+                                    <option value="event">Event</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="flex items-center space-x-2 text-sm">
+                                    <input type="checkbox" id="notif-send-push" class="w-4 h-4">
+                                    <span>Kirim juga sebagai push notification</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="w-full gradient-bg p-3 rounded-lg font-semibold text-sm sm:text-base">
+                                Kirim Notifikasi
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAddTeacherModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleAddTeacherModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl sm:text-2xl font-bold">Tambah Pembina</h3>
+                            <button onclick="toggleAddTeacherModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <form onsubmit="addTeacher(event)">
+                            <div class="mb-3">
+                                <input type="text" id="teacher-name" placeholder="Nama Lengkap" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" id="teacher-role" placeholder="Jabatan (contoh: Pembina Robotika)" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="email" id="teacher-email" placeholder="Email" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <textarea id="teacher-bio" rows="3" placeholder="Bio Singkat" class="w-full p-3 rounded-lg text-sm" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" id="teacher-expertise" placeholder="Keahlian (pisahkan dengan koma, contoh: Python, Arduino, AI)" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="url" id="teacher-photo" placeholder="URL Foto (opsional)" class="w-full p-3 rounded-lg text-sm">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-xs sm:text-sm mb-1">Atau upload foto</label>
+                                <input type="file" id="teacher-photo-file" accept="image/*" class="w-full p-2 bg-white/10 rounded-lg text-sm">
+                            </div>
+                            <button type="submit" class="w-full gradient-bg p-3 rounded-lg font-semibold text-sm sm:text-base">
+                                Tambah Pembina
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderEditTeacherModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleEditTeacherModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl sm:text-2xl font-bold">Edit Pembina</h3>
+                            <button onclick="toggleEditTeacherModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <form onsubmit="updateTeacher(event)">
+                            <div class="mb-3">
+                                <input type="text" id="edit-teacher-name" value="${selectedTeacher?.name || ''}" placeholder="Nama Lengkap" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" id="edit-teacher-role" value="${selectedTeacher?.role || ''}" placeholder="Jabatan" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <textarea id="edit-teacher-bio" rows="3" placeholder="Bio Singkat" class="w-full p-3 rounded-lg text-sm" required>${selectedTeacher?.bio || ''}</textarea>
+                            </div>
+                            <div class="mb-4">
+                                <input type="text" id="edit-teacher-expertise" value="${selectedTeacher?.expertise ? selectedTeacher.expertise.join(', ') : ''}" placeholder="Keahlian (pisahkan dengan koma)" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            <button type="submit" class="w-full gradient-bg p-3 rounded-lg font-semibold text-sm sm:text-base">
+                                Update Pembina
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==================== NOTIFICATION PANEL ====================
+        function updateNotificationPanel() {
+            const panel = document.getElementById('notification-panel');
+            if (!panel) return;
+            
+            if (showNotificationPanel) {
+                panel.classList.add('show');
+                panel.innerHTML = `
+                    <div class="p-3 border-b border-white/10 flex justify-between items-center">
+                        <h4 class="font-bold">Notifikasi</h4>
+                        ${unreadCount > 0 ? `
+                            <button onclick="markAllAsRead()" class="text-xs text-blue-400">Tandai semua dibaca</button>
+                        ` : ''}
+                    </div>
+                    <div class="max-h-80 overflow-y-auto">
+                        ${notifications.length > 0 ? notifications.map(n => {
+                            const reactions = notificationReactions[n.id] || { counts: {}, userReaction: null };
+                            const emojis = [
+                                { emoji: '👍', label: 'Suka' },
+                                { emoji: '❤️', label: 'Cinta' },
+                                { emoji: '😊', label: 'Senang' },
+                                { emoji: '😂', label: 'Lucu' },
+                                { emoji: '😮', label: 'Terkejut' },
+                                { emoji: '😢', label: 'Sedih' },
+                                { emoji: '👏', label: 'Hebat' },
+                                { emoji: '🔥', label: 'Keren' }
+                            ];
+                            
+                            return `
+                                <div class="notification-item ${currentUser && (!n.readBy || !n.readBy.includes(currentUser.uid)) ? 'unread' : ''}">
+                                    <div onclick="markAsRead('${n.id}')">
+                                        <p class="font-semibold text-sm">${n.title}</p>
+                                        <p class="text-xs text-gray-400 mt-1">${n.message}</p>
+                                        <p class="text-xs text-gray-500 mt-1">${n.createdAt ? moment(n.createdAt.toDate()).fromNow() : 'Baru saja'}</p>
+                                    </div>
+                                    
+                                    <div class="emoji-picker">
+                                        ${emojis.map(e => `
+                                            <button class="emoji-btn ${reactions.userReaction === e.emoji ? 'active' : ''}" 
+                                                    onclick="sendReaction('${n.id}', '${e.emoji}')"
+                                                    title="${e.label}">
+                                                ${e.emoji}
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                    
+                                    ${Object.keys(reactions.counts).length > 0 ? `
+                                        <div class="reaction-counter">
+                                            ${Object.entries(reactions.counts).map(([emoji, count]) => `
+                                                <span class="reaction-badge ${reactions.userReaction === emoji ? 'active' : ''}" 
+                                                      onclick="sendReaction('${n.id}', '${emoji}')">
+                                                    <span class="reaction-emoji">${emoji}</span>
+                                                    <span class="reaction-count">${count}</span>
+                                                </span>
+                                            `).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                        }).join('') : `
+                            <p class="text-center text-gray-400 py-4 text-sm">Tidak ada notifikasi</p>
+                        `}
+                    </div>
+                `;
+            } else {
+                panel.classList.remove('show');
+            }
+        }
+
+        // ==================== TOGGLE FUNCTIONS ====================
+        window.toggleNotificationPanel = () => {
+            showNotificationPanel = !showNotificationPanel;
+            updateNotificationPanel();
+        };
+
+        window.toggleLoginModal = () => {
+            showLoginModal = !showLoginModal;
+            showRegisterModal = false;
+            showForgotModal = false;
+            renderMainContent();
+        };
+
+        window.toggleRegisterModal = () => {
+            showRegisterModal = !showRegisterModal;
+            showLoginModal = false;
+            renderMainContent();
+        };
+
+        window.toggleForgotModal = () => {
+            showForgotModal = !showForgotModal;
+            showLoginModal = false;
+            renderMainContent();
+        };
+
+        window.toggleEditProfileModal = () => {
+            showEditProfileModal = !showEditProfileModal;
+            renderMainContent();
+        };
+
+        window.toggleAddProjectModal = () => {
+            showAddProjectModal = !showAddProjectModal;
+            renderMainContent();
+        };
+
+        window.toggleEditProjectModal = () => {
+            showEditProjectModal = !showEditProjectModal;
+            if (!showEditProjectModal) selectedProject = null;
+            renderMainContent();
+        };
+
+        window.toggleAddScheduleModal = () => {
+            showAddScheduleModal = !showAddScheduleModal;
+            renderMainContent();
+        };
+
+        window.toggleEditScheduleModal = () => {
+            showEditScheduleModal = !showEditScheduleModal;
+            if (!showEditScheduleModal) selectedSchedule = null;
+            renderMainContent();
+        };
+
+        window.toggleAddNotificationModal = () => {
+            showAddNotificationModal = !showAddNotificationModal;
+            renderMainContent();
+        };
+
+        window.toggleAddTeacherModal = () => {
+            showAddTeacherModal = !showAddTeacherModal;
+            renderMainContent();
+        };
+
+        window.toggleEditTeacherModal = () => {
+            showEditTeacherModal = !showEditTeacherModal;
+            if (!showEditTeacherModal) selectedTeacher = null;
+            renderMainContent();
+        };
+
+        window.showEditProfile = () => {
+            showEditProfileModal = true;
+            renderMainContent();
+        };
+
+        window.navigateTo = (page) => {
+            currentPage = page;
+            renderMainContent();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // ==================== AUTH FUNCTIONS ====================
+        window.loginWithGoogle = async () => {
+            try {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                const result = await auth.signInWithPopup(provider);
+                await handleUserLogin(result.user);
+            } catch (error) {
+                showToast('Login gagal: ' + error.message, 'error');
+            }
+        };
+
+        window.loginWithEmail = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                if (email === DEV_EMAIL && password === DEV_PASSWORD) {
+                    currentUser = { email: DEV_EMAIL, uid: 'dev_uid', displayName: 'Developer' };
+                    userRole = 'admin';
+                    userData = { name: 'Developer', role: 'admin', photo: 'https://ui-avatars.com/api/?name=Developer&background=00d4ff&color=fff' };
+                    
+                    showLoginModal = false;
+                    renderMainContent();
+                    showToast('Login developer berhasil!');
+                    return;
+                }
+                
+                const result = await auth.signInWithEmailAndPassword(email, password);
+                await handleUserLogin(result.user);
+            } catch (error) {
+                showToast('Login gagal: ' + error.message, 'error');
+            }
+        };
+
+        async function handleUserLogin(user) {
+            currentUser = user;
+            
+            if (user.email === DEV_EMAIL) {
+                userRole = 'admin';
+                userData = { name: 'Developer', role: 'admin', photo: user.photoURL };
+            } else {
+                const memberQuery = await db.collection('members').where('email', '==', user.email).get();
+                if (!memberQuery.empty) {
+                    userData = memberQuery.docs[0].data();
+                    userRole = userData.role || 'member';
+                } else {
+                    const teacherQuery = await db.collection('teachers').where('email', '==', user.email).get();
+                    if (!teacherQuery.empty) {
+                        userData = teacherQuery.docs[0].data();
+                        userRole = 'pembina';
+                    } else {
+                        userData = {
+                            name: user.displayName || user.email.split('@')[0],
+                            email: user.email,
+                            photo: user.photoURL || `https://ui-avatars.com/api/?name=${user.email.split('@')[0].replace(/\./g, '+')}&background=00d4ff&color=fff`,
+                            role: 'member',
+                            class: '',
+                            joinDate: new Date()
+                        };
+                        await db.collection('members').add(userData);
+                        userRole = 'member';
+                    }
+                }
+            }
+            
+            showLoginModal = false;
+            await loadNotifications();
+            await loadAllReactions();
+            await loadAttendanceHistory();
+            await updateOnlineStatus();
+            safeRender();
+            showToast('Login berhasil!');
+        }
+
+        window.register = async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const className = document.getElementById('register-class').value;
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            
+            if (password !== confirm) {
+                showToast('Password tidak cocok!', 'error');
+                return;
+            }
+            
+            try {
+                const result = await auth.createUserWithEmailAndPassword(email, password);
+                await result.user.updateProfile({ displayName: name });
+                
+                const newMember = {
+                    name,
+                    email,
+                    class: className,
+                    role: 'member',
+                    photo: `https://ui-avatars.com/api/?name=${name.replace(/ /g, '+')}&background=00d4ff&color=fff`,
+                    joinDate: new Date(),
+                    totalAttendance: 0
+                };
+                
+                await db.collection('members').add(newMember);
+                
+                currentUser = result.user;
+                userData = newMember;
+                userRole = 'member';
+                
+                showRegisterModal = false;
+                renderMainContent();
+                showToast('Pendaftaran berhasil!');
+            } catch (error) {
+                showToast('Pendaftaran gagal: ' + error.message, 'error');
+            }
+        };
+
+        window.forgotPassword = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('forgot-email').value;
+            
+            try {
+                await auth.sendPasswordResetEmail(email);
+                showForgotModal = false;
+                showToast('Email reset password telah dikirim!');
+            } catch (error) {
+                showToast('Gagal: ' + error.message, 'error');
+            }
+        };
+
+        window.logout = () => {
+            if (onlineCheckInterval) {
+                clearInterval(onlineCheckInterval);
+                onlineCheckInterval = null;
+            }
+            
+            if (currentUser) {
+                db.collection('status').doc(currentUser.uid).update({
+                    online: false,
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(err => console.error('Error updating status on logout:', err));
+            }
+            
+            auth.signOut();
+            currentUser = null;
+            userData = null;
+            userRole = 'member';
+            onlineUsers = {};
+            renderMainContent();
+            showToast('Berhasil logout');
+        };
+
+        // ==================== PROFILE FUNCTIONS ====================
+        window.updateProfile = async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('edit-name').value;
+            const className = document.getElementById('edit-class').value;
+            const bio = document.getElementById('edit-bio').value;
+            const photoUrl = document.getElementById('profile-preview').src;
+            
+            try {
+                if (currentUser && currentUser.updateProfile) {
+                    await currentUser.updateProfile({ 
+                        displayName: name,
+                        photoURL: photoUrl 
+                    });
+                }
+                
+                if (userRole === 'pembina') {
+                    const teacherQuery = await db.collection('teachers').where('email', '==', currentUser.email).get();
+                    if (!teacherQuery.empty) {
+                        await teacherQuery.docs[0].ref.update({ 
+                            name, 
+                            bio,
+                            photo: photoUrl 
+                        });
+                    }
+                } else {
+                    const memberQuery = await db.collection('members').where('email', '==', currentUser.email).get();
+                    if (!memberQuery.empty) {
+                        await memberQuery.docs[0].ref.update({
+                            name,
+                            class: className,
+                            bio,
+                            photo: photoUrl,
+                            updatedAt: new Date()
+                        });
+                    }
+                }
+                
+                userData = { ...userData, name, class: className, bio, photo: photoUrl };
+                
+                showEditProfileModal = false;
+                renderMainContent();
+                showToast('Profile berhasil diupdate!');
+            } catch (error) {
+                showToast('Gagal update: ' + error.message, 'error');
+            }
+        };
+
+        // ==================== ADMIN FUNCTIONS ====================
+        window.addProject = async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('project-name').value;
+            const team = document.getElementById('project-team').value;
+            const description = document.getElementById('project-desc').value;
+            const members = parseInt(document.getElementById('project-members').value);
+            const status = document.getElementById('project-status').value;
+            const imageUrl = document.getElementById('project-image').value;
+            
+            try {
+                let image = imageUrl || 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e';
+                
+                await db.collection('projects').add({
+                    name,
+                    team,
+                    description,
+                    members,
+                    status,
+                    image,
+                    createdAt: new Date(),
+                    createdBy: currentUser?.uid
+                });
+                
+                showAddProjectModal = false;
+                await loadProjects();
+                safeRender();
+                showToast('Proyek berhasil ditambahkan!');
+            } catch (error) {
+                showToast('Gagal: ' + error.message, 'error');
+            }
+        };
+
+        window.addSchedule = async (e) => {
+            e.preventDefault();
+            
+            const day = document.getElementById('schedule-day').value;
+            const time = document.getElementById('schedule-time').value;
+            const activity = document.getElementById('schedule-activity').value;
+            const instructor = document.getElementById('schedule-instructor').value;
+            
+            try {
+                await db.collection('schedules').add({
+                    day,
+                    time,
+                    activity,
+                    instructor,
+                    createdAt: new Date(),
+                    createdBy: currentUser?.uid
+                });
+                
+                showAddScheduleModal = false;
+                await loadSchedules();
+                safeRender();
+                showToast('Jadwal berhasil ditambahkan!');
+            } catch (error) {
+                showToast('Gagal: ' + error.message, 'error');
+            }
+        };
+
+        window.addNotification = async (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('notif-title').value;
+            const message = document.getElementById('notif-message').value;
+            const type = document.getElementById('notif-type').value;
+            const sendPush = document.getElementById('notif-send-push').checked;
+            
+            try {
+                const notificationData = {
+                    title,
+                    message,
+                    type,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdBy: currentUser?.uid,
+                    createdByName: userData?.name || currentUser?.displayName,
+                    readBy: []
+                };
+                
+                await db.collection('notifications').add(notificationData);
+                
+                if (sendPush) {
+                    showNotification(title, { 
+                        body: message,
+                        icon: 'https://ui-avatars.com/api/?name=Notif&background=00d4ff&color=fff'
+                    });
+                }
+                
+                showAddNotificationModal = false;
+                await loadNotifications();
+                safeRender();
+                showToast('Notifikasi berhasil dikirim!');
+                
+            } catch (error) {
+                console.error('Error adding notification:', error);
+                showToast('Gagal: ' + error.message, 'error');
+            }
+        };
+
+        window.addTeacher = async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('teacher-name').value;
+            const role = document.getElementById('teacher-role').value;
+            const email = document.getElementById('teacher-email').value;
+            const bio = document.getElementById('teacher-bio').value;
+            const expertiseStr = document.getElementById('teacher-expertise').value;
+            const photoUrl = document.getElementById('teacher-photo').value;
+            const photoFile = document.getElementById('teacher-photo-file').files[0];
+            
+            const expertise = expertiseStr.split(',').map(s => s.trim());
+            
+            try {
+                let photo = photoUrl || `https://ui-avatars.com/api/?name=${name.replace(/ /g, '+')}&background=00d4ff&color=fff`;
+                
+                if (photoFile) {
+                    showToast('Mengupload foto...', 'info');
+                    const storageRef = storage.ref(`teachers/${Date.now()}_${photoFile.name}`);
+                    await storageRef.put(photoFile);
+                    photo = await storageRef.getDownloadURL();
+                }
+                
+                await db.collection('teachers').add({
+                    name,
+                    role,
+                    email,
+                    bio,
+                    expertise,
+                    photo,
+                    createdAt: new Date()
+                });
+                
+                showAddTeacherModal = false;
+                await loadTeachers();
+                safeRender();
+                showToast('Pembina berhasil ditambahkan!');
+            } catch (error) {
+                showToast('Gagal: ' + error.message, 'error');
+            }
+        };
+
+        // ==================== NOTIFICATION FUNCTIONS ====================
+        window.markAsRead = async (notificationId) => {
+            if (!currentUser) return;
+            
+            try {
+                const notificationRef = db.collection('notifications').doc(notificationId);
+                const notification = await notificationRef.get();
+                
+                if (notification.exists) {
+                    const readBy = notification.data().readBy || [];
+                    if (!readBy.includes(currentUser.uid)) {
+                        readBy.push(currentUser.uid);
+                        await notificationRef.update({ readBy });
+                    }
+                }
+                
+                await loadNotifications();
+                updateNotificationPanel();
+            } catch (error) {
+                console.error('Error marking as read:', error);
+            }
+        };
+
+        window.markAllAsRead = async () => {
+            if (!currentUser) return;
+            
+            try {
+                const batch = db.batch();
+                
+                notifications.forEach(n => {
+                    if (!n.readBy || !n.readBy.includes(currentUser.uid)) {
+                        const ref = db.collection('notifications').doc(n.id);
+                        const readBy = n.readBy || [];
+                        readBy.push(currentUser.uid);
+                        batch.update(ref, { readBy });
+                    }
+                });
+                
+                await batch.commit();
+                await loadNotifications();
+                updateNotificationPanel();
+                showToast('Semua notifikasi telah dibaca');
+            } catch (error) {
+                console.error('Error marking all as read:', error);
+            }
+        };
+
+        // ==================== FUNGSI UPLOAD PROYEK ====================
+        window.uploadProjectPhoto = async function() {
+            const input = document.getElementById('project-photo-input');
+            const file = input?.files[0];
+            if (!file) {
+                showToast('Pilih file dulu', 'warning');
+                return;
+            }
+            
+            if (!file.type.match('image.*')) {
+                showToast('File harus berupa gambar!', 'error');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('Ukuran file maksimal 5MB!', 'error');
+                return;
+            }
+            
+            const preview = document.getElementById('project-preview');
+            const placeholder = document.getElementById('project-placeholder');
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                if (placeholder) placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+            
+            const progressBar = document.getElementById('project-upload-progress');
+            const progressBarInner = document.getElementById('project-upload-progress-bar');
+            if (progressBar) progressBar.classList.add('show');
+            
+            try {
+                const fileName = `projects/${currentUser?.uid || 'temp'}/${Date.now()}_${file.name}`;
+                const storageRef = storage.ref(fileName);
+                const uploadTask = storageRef.put(file);
+                
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        if (progressBarInner) progressBarInner.style.width = progress + '%';
+                    },
+                    (error) => {
+                        console.error('Upload error:', error);
+                        showToast('Gagal upload: ' + error.message, 'error');
+                        if (progressBar) progressBar.classList.remove('show');
+                    },
+                    async () => {
+                        const url = await uploadTask.snapshot.ref.getDownloadURL();
+                        if (progressBar) progressBar.classList.remove('show');
+                        
+                        const urlInput = document.getElementById('project-image');
+                        if (urlInput) urlInput.value = url;
+                        
+                        showToast('Foto berhasil diupload!');
+                    }
+                );
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Gagal upload', 'error');
+                if (progressBar) progressBar.classList.remove('show');
+            }
+        };
+
+        window.previewProjectUrl = function() {
+            const url = document.getElementById('project-image').value;
+            if (!url) {
+                showToast('Masukkan URL dulu', 'warning');
+                return;
+            }
+            
+            const preview = document.getElementById('project-preview');
+            const placeholder = document.getElementById('project-placeholder');
+            
+            preview.src = url;
+            preview.style.display = 'block';
+            if (placeholder) placeholder.style.display = 'none';
+            
+            showToast('Preview URL siap');
+        };
+
+        // ==================== FUNGSI UPLOAD FOTO DENGAN PROGRESS ====================
+        window.uploadFromFileInput = async function(inputId, previewId, callback) {
+            const input = document.getElementById(inputId);
+            const file = input?.files[0];
+            if (!file) return;
+            
+            const preview = document.getElementById(previewId);
+            if (preview) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            const progressBar = document.getElementById('upload-progress');
+            const progressBarInner = document.getElementById('upload-progress-bar');
+            if (progressBar) progressBar.classList.add('show');
+            
+            try {
+                const fileName = `profiles/${currentUser.uid}/${Date.now()}_${file.name}`;
+                const storageRef = storage.ref(fileName);
+                const uploadTask = storageRef.put(file);
+                
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        if (progressBarInner) progressBarInner.style.width = progress + '%';
+                    },
+                    (error) => {
+                        console.error('Upload error:', error);
+                        showToast('Gagal upload: ' + error.message, 'error');
+                        if (progressBar) progressBar.classList.remove('show');
+                    },
+                    async () => {
+                        const url = await uploadTask.snapshot.ref.getDownloadURL();
+                        if (progressBar) progressBar.classList.remove('show');
+                        
+                        if (callback) callback(url);
+                    }
+                );
+            } catch (error) {
+                console.error('Upload error:', error);
+                showToast('Gagal upload: ' + error.message, 'error');
+                if (progressBar) progressBar.classList.remove('show');
+            }
+        };
+
+        // ==================== AUTH STATE LISTENER ====================
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                await handleUserLogin(user);
+            } else {
+                currentUser = null;
+                userData = null;
+                userRole = 'member';
+                onlineUsers = {};
+                safeRender();
+            }
+        });
+
+        // ==================== MESSAGING ====================
+        if (messaging) {
+            messaging.onMessage((payload) => {
+                console.log('Message received:', payload);
+                showNotification(payload.notification?.title || 'Notifikasi Baru', {
+                    body: payload.notification?.body || payload.data?.message || '',
+                    icon: payload.notification?.icon || 'https://ui-avatars.com/api/?name=Notif&background=00d4ff&color=fff',
+                    data: payload.data
+                });
+                
+                loadNotifications();
+            });
+        }
+    </script>
+</body>
+</html>
