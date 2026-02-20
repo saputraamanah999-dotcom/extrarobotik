@@ -9,6 +9,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     
     <!-- Cloudinary SDK -->
     <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
@@ -56,6 +58,16 @@
     
     <!-- QR Code -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    
+    <!-- Qr Scanner -->
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    
+    <!-- Emoji Picker -->
+    <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.14.1/index.js" type="module"></script>
+    
+    <!-- Cropper.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <style>
         * {
@@ -148,6 +160,16 @@
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
             75% { transform: translateX(5px); }
+        }
+
+        @keyframes rainbow {
+            0% { color: #ff0000; }
+            17% { color: #ff8800; }
+            33% { color: #ffff00; }
+            50% { color: #00ff00; }
+            67% { color: #0088ff; }
+            83% { color: #8800ff; }
+            100% { color: #ff0088; }
         }
 
         .roboto-font {
@@ -788,6 +810,249 @@
             animation: pulse 2s infinite;
         }
 
+        /* Verified Badge dengan SVG */
+        .verified-badge-svg {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 6px;
+            animation: pulse 2s infinite;
+        }
+
+        .verified-badge-svg svg {
+            width: 18px;
+            height: 18px;
+            fill: #0095F6;
+            filter: drop-shadow(0 0 5px #0095F6);
+        }
+
+        .verified-badge-svg.large svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .verified-badge-svg.small svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.9; }
+        }
+
+        .dev-chat-bubble {
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
+            background-size: 200% 200%;
+            animation: shimmer 3s linear infinite !important;
+            border: 2px solid gold !important;
+            position: relative;
+        }
+
+        .dev-chat-bubble::before {
+            content: '👑 DEV';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: gold;
+            color: black;
+            font-size: 8px;
+            padding: 2px 4px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .admin-chat-bubble {
+            background: linear-gradient(45deg, #ffd700, #ffa500) !important;
+            border: 2px solid #ffd700 !important;
+            position: relative;
+        }
+
+        .admin-chat-bubble::before {
+            content: '👑 ADMIN';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #ffd700;
+            color: black;
+            font-size: 8px;
+            padding: 2px 4px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .post-owner-badge {
+            position: relative;
+        }
+
+        .post-owner-badge::after {
+            content: '📌 Owner';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(0,212,255,0.9);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .like-counter {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .like-counter.liked {
+            color: #ff4b4b;
+            transform: scale(1.1);
+        }
+
+        .comment-delete {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .comment-item:hover .comment-delete {
+            opacity: 1;
+        }
+
+        .reaction-emoji {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+
+        .reaction-emoji:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 5px gold);
+        }
+
+        .reaction-emoji.selected {
+            transform: scale(1.3);
+            filter: drop-shadow(0 0 10px gold);
+        }
+
+        .emoji-picker {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            margin-top: 5px;
+        }
+
+        .font-size-control {
+            width: 100%;
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .font-size-control::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #00d4ff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .crop-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .crop-image {
+            max-width: 100%;
+            max-height: 300px;
+        }
+
+        .store-item {
+            border: 1px solid rgba(0,212,255,0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .store-item:hover {
+            border-color: #00d4ff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,212,255,0.2);
+        }
+
+        .store-item.purchased {
+            opacity: 0.7;
+            filter: grayscale(0.5);
+        }
+
+        .store-item.purchased::after {
+            content: '✓ PURCHASED';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: gold;
+            color: black;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .group-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 12px;
+            background: rgba(0,212,255,0.1);
+            border-radius: 20px;
+            border: 1px solid #00d4ff;
+            transition: all 0.3s ease;
+        }
+
+        .group-link:hover {
+            background: #00d4ff;
+            color: black;
+            transform: scale(1.05);
+        }
+
+        #qr-scanner-container {
+            width: 100%;
+            height: 300px;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .story-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #00d4ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .story-circle:hover {
+            transform: scale(1.1);
+            border-color: gold;
+        }
+
+        .story-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .story-circle.has-story {
+            border: 3px solid gold;
+        }
+
         @media (max-width: 768px) {
             .desktop-menu {
                 display: none !important;
@@ -879,11 +1144,35 @@
         };
 
         // Initialize Firebase
-        let auth, db;
+        let auth, db, messaging, storage;
         try {
             firebase.initializeApp(firebaseConfig);
             auth = firebase.auth();
             db = firebase.firestore();
+            storage = firebase.storage();
+            
+            // Initialize Firebase Cloud Messaging
+            if (firebase.messaging && 'Notification' in window) {
+                messaging = firebase.messaging();
+                
+                const vapidKey = 'BLhRbRjXzUoPqYiLkGdSfGhJkLmNpQsRtVwXyZaBcDeFgHiJkLmNoPqRsTuVwXyZaBcDeFgHiJkLmN';
+                
+                messaging.getToken({ vapidKey: vapidKey })
+                    .then((currentToken) => {
+                        if (currentToken) {
+                            console.log('FCM Token:', currentToken);
+                            localStorage.setItem('fcmToken', currentToken);
+                        }
+                    })
+                    .catch((err) => {
+                        console.log('Error getting token:', err);
+                    });
+                    
+                messaging.onMessage((payload) => {
+                    console.log('Message received:', payload);
+                    showNotification(payload.notification.title, payload.notification.body);
+                });
+            }
             
             db.enablePersistence()
                 .catch(err => console.log('Persistence error:', err));
@@ -1038,6 +1327,7 @@
         let feeds = [];
         let comments = [];
         let follows = [];
+        let posts = [];
         
         let unreadCount = 0;
         let showNotificationPanel = false;
@@ -1066,6 +1356,14 @@
         let showMysteryBoxModal = false;
         let showStoryModal = false;
         let showFeedModal = false;
+        let showNotificationsPermissionModal = false;
+        let showAddPostModal = false;
+        let showCommentModal = false;
+        let showReactionModal = false;
+        let showFontSizeModal = false;
+        let showCropModal = false;
+        let showGroupLinkModal = false;
+        let showFollowersModal = false;
         
         let selectedProject = null;
         let selectedSchedule = null;
@@ -1073,13 +1371,9 @@
         let selectedMember = null;
         let selectedBadge = null;
         let selectedStory = null;
+        let selectedPost = null;
+        let cropper = null;
         
-        let notificationReactions = {};
-        let lastRenderTime = 0;
-        const RENDER_THROTTLE = 1000;
-        
-        let attendanceChart = null;
-        let leaderboardData = [];
         let userBadges = {};
         let userLevels = {};
         let userMissions = {};
@@ -1092,6 +1386,8 @@
         let userFollowers = {};
         let userFollowing = {};
         let userStories = {};
+        let userVerified = {};
+        let userFontSize = 16;
 
         // Sound effects
         const sounds = {
@@ -1160,86 +1456,313 @@
         }
 
         function safeRender() {
-            const now = Date.now();
-            if (now - lastRenderTime > RENDER_THROTTLE) {
-                lastRenderTime = now;
-                requestAnimationFrame(() => {
-                    renderMainContent();
-                });
-            }
+            requestAnimationFrame(() => {
+                renderMainContent();
+            });
         }
 
-        // ==================== CLOUDINARY UPLOAD ====================
-        window.openCloudinaryUploader = function(callback) {
-            cloudinary.openUploadWidget({
-                cloudName: CLOUDINARY_CLOUD_NAME,
-                uploadPreset: CLOUDINARY_UPLOAD_PRESET,
-                apiKey: CLOUDINARY_API_KEY,
-                sources: ['local', 'url', 'camera'],
-                cropping: true,
-                croppingAspectRatio: 1,
-                multiple: false,
-                styles: {
-                    palette: {
-                        window: "#1a1f35",
-                        windowBorder: "#00d4ff",
-                        tabIcon: "#00d4ff",
-                        menuIcons: "#ffffff",
-                        textDark: "#000000",
-                        textLight: "#ffffff",
-                        link: "#00d4ff",
-                        action: "#0a5cff",
-                        error: "#ff4b4b",
-                        inProgress: "#00d4ff",
-                        complete: "#10b981",
-                        sourceBg: "#0a0f1e"
+        // ==================== NOTIFICATION PERMISSION ====================
+        window.requestNotificationPermission = async () => {
+            if (!('Notification' in window)) {
+                showToast('Browser tidak mendukung notifikasi', 'error');
+                return;
+            }
+            
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                showToast('Notifikasi diizinkan!', 'success');
+                showNotificationsPermissionModal = false;
+                renderMainContent();
+            } else {
+                showToast('Notifikasi ditolak', 'warning');
+            }
+        };
+
+        // ==================== VERIFIED BADGE ====================
+        window.setVerified = async (userId) => {
+            if (userRole !== 'developer') {
+                showToast('Fitur ini hanya untuk developer!', 'error');
+                return;
+            }
+            
+            try {
+                await db.collection('members').doc(userId).update({
+                    verified: true,
+                    verifiedBy: currentUser.uid,
+                    verifiedAt: new Date()
+                });
+                showToast('✅ User berhasil diverifikasi!', 'success');
+            } catch (error) {
+                showToast('Gagal: ' + error.message, 'error');
+            }
+        };
+
+        window.removeVerified = async (userId) => {
+            if (userRole !== 'developer') {
+                showToast('Fitur ini hanya untuk developer!', 'error');
+                return;
+            }
+            
+            try {
+                await db.collection('members').doc(userId).update({
+                    verified: false
+                });
+                showToast('✅ Verifikasi dihapus!', 'success');
+            } catch (error) {
+                showToast('Gagal: ' + error.message, 'error');
+            }
+        };
+
+        // ==================== LIKE & VIEWS ====================
+        window.likePost = async (postId, targetLikes) => {
+            if (userRole !== 'developer' && !targetLikes) {
+                // Normal user like
+                if (!currentUser) {
+                    showToast('Silakan login dulu!', 'error');
+                    return;
+                }
+                
+                const postRef = db.collection('posts').doc(postId);
+                const post = posts.find(p => p.id === postId);
+                
+                if (!post) return;
+                
+                const likes = post.likes || [];
+                const userLiked = likes.includes(currentUser.uid);
+                
+                try {
+                    if (userLiked) {
+                        await postRef.update({
+                            likes: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
+                        });
+                    } else {
+                        await postRef.update({
+                            likes: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
+                        });
                     }
+                } catch (error) {
+                    console.error('Error liking post:', error);
                 }
-            }, (error, result) => {
-                if (!error && result && result.event === 'success') {
-                    callback(result.info.secure_url);
-                } else if (error) {
-                    showToast('Gagal upload: ' + error.message, 'error');
+                return;
+            }
+            
+            // Developer set likes
+            try {
+                const numLikes = parseInt(targetLikes);
+                if (isNaN(numLikes) || numLikes < 0) {
+                    showToast('Masukkan angka yang valid!', 'error');
+                    return;
                 }
-            });
+                
+                await db.collection('posts').doc(postId).update({
+                    likes: numLikes
+                });
+                showToast(`✅ Likes diubah menjadi ${numLikes}!`, 'success');
+            } catch (error) {
+                showToast('Gagal: ' + error.message, 'error');
+            }
         };
 
-        window.uploadProfilePhoto = function() {
-            openCloudinaryUploader((url) => {
-                document.getElementById('profile-preview').src = url;
-                document.getElementById('profile-url-input').value = url;
-                showToast('Foto berhasil diupload!', 'success');
-            });
+        window.setViews = async (postId, targetViews) => {
+            if (userRole !== 'developer') {
+                showToast('Fitur ini hanya untuk developer!', 'error');
+                return;
+            }
+            
+            try {
+                const numViews = parseInt(targetViews);
+                if (isNaN(numViews) || numViews < 0) {
+                    showToast('Masukkan angka yang valid!', 'error');
+                    return;
+                }
+                
+                await db.collection('posts').doc(postId).update({
+                    views: numViews
+                });
+                showToast(`✅ Views diubah menjadi ${numViews}!`, 'success');
+            } catch (error) {
+                showToast('Gagal: ' + error.message, 'error');
+            }
         };
 
-        window.uploadProjectPhoto = function() {
-            openCloudinaryUploader((url) => {
-                document.getElementById('project-preview').src = url;
-                document.getElementById('project-preview').style.display = 'block';
-                document.getElementById('project-placeholder').style.display = 'none';
-                document.getElementById('project-image').value = url;
-                showToast('Foto proyek berhasil diupload!', 'success');
+        // ==================== DELETE COMMENT & POST ====================
+        window.deleteComment = async (commentId) => {
+            if (!currentUser) return;
+            
+            const comment = comments.find(c => c.id === commentId);
+            if (!comment) return;
+            
+            if (comment.userId !== currentUser.uid && userRole !== 'developer' && userRole !== 'admin') {
+                showToast('Anda tidak berhak menghapus komentar ini!', 'error');
+                return;
+            }
+            
+            const result = await Swal.fire({
+                title: 'Hapus Komentar?',
+                text: 'Komentar akan dihapus permanen!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
             });
+            
+            if (result.isConfirmed) {
+                try {
+                    await db.collection('comments').doc(commentId).delete();
+                    showToast('✅ Komentar berhasil dihapus!', 'success');
+                } catch (error) {
+                    showToast('Gagal: ' + error.message, 'error');
+                }
+            }
         };
 
-        window.uploadStoryPhoto = function() {
-            openCloudinaryUploader((url) => {
-                createStory(url);
+        window.deletePost = async (postId) => {
+            if (!currentUser) return;
+            
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            if (post.userId !== currentUser.uid && userRole !== 'developer' && userRole !== 'admin') {
+                showToast('Anda tidak berhak menghapus postingan ini!', 'error');
+                return;
+            }
+            
+            const result = await Swal.fire({
+                title: 'Hapus Postingan?',
+                text: 'Postingan akan dihapus permanen!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
             });
+            
+            if (result.isConfirmed) {
+                try {
+                    await db.collection('posts').doc(postId).delete();
+                    
+                    const commentSnapshot = await db.collection('comments')
+                        .where('postId', '==', postId)
+                        .get();
+                    
+                    const batch = db.batch();
+                    commentSnapshot.docs.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    await batch.commit();
+                    
+                    showToast('✅ Postingan berhasil dihapus!', 'success');
+                } catch (error) {
+                    showToast('Gagal: ' + error.message, 'error');
+                }
+            }
         };
 
-        window.uploadFeedPhoto = function() {
-            openCloudinaryUploader((url) => {
-                document.getElementById('feed-image').value = url;
-                document.getElementById('feed-preview').src = url;
-                document.getElementById('feed-preview').style.display = 'block';
-                document.getElementById('feed-placeholder').style.display = 'none';
-            });
+        // ==================== LEVEL & POINTS ====================
+        window.setUserLevel = async (userId, newLevel) => {
+            if (userRole !== 'developer') {
+                showToast('Fitur ini hanya untuk developer!', 'error');
+                return;
+            }
+            
+            try {
+                const level = parseInt(newLevel);
+                if (isNaN(level) || level < 1 || level > 100) {
+                    showToast('Level harus 1-100!', 'error');
+                    return;
+                }
+                
+                const titles = ['Baru', 'Aktif', 'Super Aktif', 'Veteran', 'Legenda', 'Ultra', 'Mega', 'Hyper', 'Grand', 'Master', 'Dewa'];
+                const icons = ['🆕', '🔥', '⚡', '🎯', '🏆', '💫', '✨', '⭐', '🌟', '👑', '👑'];
+                
+                let titleIndex = Math.min(Math.floor(level / 10), titles.length - 1);
+                
+                await db.collection('members').doc(userId).update({
+                    level: level,
+                    levelTitle: titles[titleIndex],
+                    levelIcon: icons[titleIndex]
+                });
+                
+                showToast('✅ Level berhasil diubah!', 'success');
+                
+            } catch (error) {
+                showToast('Gagal: ' + error.message, 'error');
+            }
+        };
+
+        window.addPointsToMember = async (userId, points) => {
+            if (userRole !== 'developer') {
+                showToast('Fitur ini hanya untuk developer!', 'error');
+                return;
+            }
+            
+            try {
+                const numPoints = parseInt(points);
+                if (isNaN(numPoints) || numPoints < 0) {
+                    showToast('Masukkan angka yang valid!', 'error');
+                    return;
+                }
+                
+                const currentPoints = userPoints[userId] || 0;
+                await db.collection('points').doc(userId).set({
+                    points: currentPoints + numPoints,
+                    updatedAt: new Date()
+                }, { merge: true });
+                
+                showToast(`✅ Menambah ${numPoints} points!`, 'success');
+            } catch (error) {
+                showToast('Gagal: ' + error.message, 'error');
+            }
+        };
+
+        // ==================== CLAIM BADGE ====================
+        window.claimBadge = async (badgeId) => {
+            if (!currentUser) {
+                showToast('Silakan login dulu!', 'error');
+                return;
+            }
+            
+            try {
+                let currentBadges = userBadges[currentUser.uid]?.badges || [];
+                if (currentBadges.includes(badgeId)) {
+                    showToast('Badge sudah dimiliki!', 'warning');
+                    return;
+                }
+                
+                const badge = badges.find(b => b.id === badgeId);
+                if (!badge) return;
+                
+                currentBadges.push(badgeId);
+                await db.collection('badges').doc(currentUser.uid).set({
+                    badges: currentBadges,
+                    updatedAt: new Date()
+                }, { merge: true });
+                
+                const currentPoints = userPoints[currentUser.uid] || 0;
+                await db.collection('points').doc(currentUser.uid).set({
+                    points: currentPoints + badge.points,
+                    updatedAt: new Date()
+                }, { merge: true });
+                
+                showToast(`✅ Berhasil mengklaim ${badge.name} +${badge.points} points!`, 'success');
+            } catch (error) {
+                showToast('Gagal: ' + error.message, 'error');
+            }
+        };
+
+        // ==================== FONT SIZE ====================
+        window.setFontSize = (size) => {
+            userFontSize = parseInt(size);
+            document.body.style.fontSize = `${userFontSize}px`;
+            localStorage.setItem('userFontSize', userFontSize);
         };
 
         // ==================== QR CODE ====================
-        window.generateQRCode = function(text) {
-            const qrContainer = document.getElementById('qr-code-container');
+        window.generateQRCode = function(text, elementId = 'qr-code-container') {
+            const qrContainer = document.getElementById(elementId);
             if (!qrContainer) return;
             
             QRCode.toCanvas(qrContainer, text, {
@@ -1263,6 +1786,345 @@
             link.href = canvas.toDataURL();
             link.click();
         };
+
+        window.scanQR = function() {
+            showQRModal = true;
+            renderMainContent();
+            
+            setTimeout(() => {
+                const html5QrCode = new Html5Qrcode("qr-scanner-container");
+                const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+                    showToast(`QR Code: ${decodedText}`, 'success');
+                    html5QrCode.stop();
+                    showQRModal = false;
+                    renderMainContent();
+                    
+                    // Process QR data
+                    try {
+                        const data = JSON.parse(decodedText);
+                        if (data.type === 'attendance') {
+                            submitAttendanceQR(data);
+                        } else if (data.type === 'profile') {
+                            viewMemberProfile(data.userId);
+                        } else if (data.type === 'group') {
+                            window.open(data.url, '_blank');
+                        }
+                    } catch (e) {
+                        // If not JSON, just show the text
+                        console.log('QR text:', decodedText);
+                    }
+                };
+                
+                const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+                
+                html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
+                    .catch((err) => {
+                        showToast('Gagal mengakses kamera: ' + err, 'error');
+                    });
+            }, 500);
+        };
+
+        // ==================== GROUP LINK ====================
+        window.openGroupLink = (platform) => {
+            let url = '';
+            if (platform === 'wa') url = 'https://chat.whatsapp.com/example';
+            if (platform === 'tg') url = 'https://t.me/ekskul_robotik';
+            if (platform === 'dc') url = 'https://discord.gg/example';
+            window.open(url, '_blank');
+        };
+
+        window.copyToClipboard = (text) => {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Link berhasil disalin!', 'success');
+            }).catch(() => {
+                showToast('Gagal menyalin', 'error');
+            });
+        };
+
+        // ==================== FOLLOWER SYSTEM ====================
+        window.addFollowers = async (userId, count) => {
+            if (userRole !== 'developer') {
+                showToast('Fitur ini hanya untuk developer!', 'error');
+                return;
+            }
+            
+            try {
+                const numCount = parseInt(count);
+                if (isNaN(numCount) || numCount < 0) {
+                    showToast('Masukkan angka yang valid!', 'error');
+                    return;
+                }
+                
+                const batch = db.batch();
+                
+                for (let i = 0; i < numCount; i++) {
+                    const followerId = `fake_follower_${Date.now()}_${i}`;
+                    const followId = `${followerId}_${userId}`;
+                    const followRef = db.collection('follows').doc(followId);
+                    
+                    batch.set(followRef, {
+                        followerId: followerId,
+                        followingId: userId,
+                        followerName: `Follower ${i + 1}`,
+                        followingName: members.find(m => m.id === userId)?.name,
+                        createdAt: new Date()
+                    });
+                }
+                
+                await batch.commit();
+                showToast(`✅ Berhasil menambah ${numCount} followers!`, 'success');
+            } catch (error) {
+                showToast('Gagal: ' + error.message, 'error');
+            }
+        };
+
+        window.showFollowers = (userId) => {
+            const followersList = userFollowers[userId] || [];
+            
+            Swal.fire({
+                title: 'Daftar Pengikut',
+                html: `
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        ${followersList.length > 0 ? followersList.map(followerId => {
+                            const member = members.find(m => m.id === followerId);
+                            return `
+                                <div style="display: flex; align-items: center; gap: 10px; padding: 8px; border-bottom: 1px solid #333;">
+                                    <img src="${member?.photo || 'https://ui-avatars.com/api/?name=User'}" 
+                                         style="width: 40px; height: 40px; border-radius: 50%;">
+                                    <div style="text-align: left;">
+                                        <p style="font-weight: bold;">${member?.name || 'Follower'}</p>
+                                        <p style="font-size: 12px; color: #888;">@${followerId.substring(0, 8)}</p>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('') : '<p style="color: #888;">Belum ada pengikut</p>'}
+                    </div>
+                `,
+                confirmButtonColor: '#00d4ff'
+            });
+        };
+
+        // ==================== SELF FOLLOW RESTRICTION ====================
+        window.toggleFollow = async (userId) => {
+            if (!currentUser) {
+                showToast('Silakan login dulu!', 'error');
+                return;
+            }
+            
+            if (userId === currentUser.uid) {
+                showToast('Tidak bisa follow diri sendiri!', 'warning');
+                return;
+            }
+            
+            const followId = `${currentUser.uid}_${userId}`;
+            const followRef = db.collection('follows').doc(followId);
+            const isFollowing = userFollowing[currentUser.uid]?.includes(userId);
+            
+            try {
+                if (isFollowing) {
+                    await followRef.delete();
+                    showToast('Berhenti mengikuti', 'info');
+                } else {
+                    await followRef.set({
+                        followerId: currentUser.uid,
+                        followingId: userId,
+                        followerName: userData?.name || currentUser.displayName,
+                        followingName: members.find(m => m.id === userId)?.name,
+                        createdAt: new Date()
+                    });
+                    showToast('Sekarang mengikuti', 'success');
+                }
+            } catch (error) {
+                showToast('Gagal: ' + error.message, 'error');
+            }
+        };
+
+        // ==================== DEVELOPER SPECIAL EFFECTS ====================
+        function getDeveloperChatStyle() {
+            return {
+                background: 'linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff)',
+                backgroundSize: '200% 200%',
+                animation: 'shimmer 3s linear infinite',
+                border: '2px solid gold',
+                color: 'white',
+                fontWeight: 'bold',
+                transform: 'scale(1.02)',
+                boxShadow: '0 0 20px rgba(255,0,255,0.5)'
+            };
+        }
+
+        function getAdminChatStyle() {
+            return {
+                background: 'linear-gradient(45deg, #ffd700, #ffa500)',
+                border: '2px solid #ffd700',
+                color: 'black',
+                fontWeight: 'bold'
+            };
+        }
+
+        // ==================== EMOJI 15.4 2022 ====================
+        const emojiList2022 = [
+            { emoji: '😀', name: 'Wajah Tersenyum' },
+            { emoji: '😃', name: 'Wajah Tersenyum Besar' },
+            { emoji: '😄', name: 'Tersenyum dengan Mata Bahagia' },
+            { emoji: '😁', name: 'Tersenyum dengan Mata Ceria' },
+            { emoji: '😆', name: 'Tersenyum Lebar' },
+            { emoji: '😅', name: 'Tersenyum Keringat' },
+            { emoji: '🤣', name: 'Tertawa Terbahak' },
+            { emoji: '😂', name: 'Tertawa Air Mata' },
+            { emoji: '🙂', name: 'Tersenyum Tipis' },
+            { emoji: '🙃', name: 'Wajah Terbalik' },
+            { emoji: '🫠', name: 'Wajah Meleleh' },
+            { emoji: '😉', name: 'Mengedip' },
+            { emoji: '😊', name: 'Tersenyum Pipi Merah' },
+            { emoji: '😇', name: 'Tersenyum Halo' },
+            { emoji: '🥰', name: 'Tersenyum dengan Hati' },
+            { emoji: '😍', name: 'Mata Berbentuk Hati' },
+            { emoji: '🤩', name: 'Bintang di Mata' },
+            { emoji: '😘', name: 'Mencium' },
+            { emoji: '😗', name: 'Ciuman' },
+            { emoji: '😚', name: 'Mencium dengan Mata Tertutup' },
+            { emoji: '😙', name: 'Mencium dengan Mata Senang' },
+            { emoji: '🥲', name: 'Tersenyum dengan Air Mata' },
+            { emoji: '😋', name: 'Makan Enak' },
+            { emoji: '😛', name: 'Menjulurkan Lidah' },
+            { emoji: '😜', name: 'Menjulurkan Lidah Mengedip' },
+            { emoji: '🤪', name: 'Wajah Gila' },
+            { emoji: '😝', name: 'Menjulurkan Lidah Mata Juling' },
+            { emoji: '🤑', name: 'Uang di Mulut' },
+            { emoji: '🤗', name: 'Tangan Merangkul' },
+            { emoji: '🤭', name: 'Tangan di Mulut' },
+            { emoji: '🫢', name: 'Mata Terbuka dengan Tangan di Mulut' },
+            { emoji: '🫣', name: 'Mata Melihat dengan Tangan' },
+            { emoji: '🤫', name: 'Menyuruh Diam' },
+            { emoji: '🤔', name: 'Berpikir' },
+            { emoji: '🫡', name: 'Wajah Hormat' },
+            { emoji: '🤐', name: 'Mulut Resleting' },
+            { emoji: '🤨', name: 'Alis Mengerut' },
+            { emoji: '😐', name: 'Wajah Netral' },
+            { emoji: '😑', name: 'Tanpa Ekspresi' },
+            { emoji: '😶', name: 'Tanpa Mulut' },
+            { emoji: '🫥', name: 'Wajah dengan Garis Putus-putus' },
+            { emoji: '😏', name: 'Senyum Sinis' },
+            { emoji: '😒', name: 'Tidak Suka' },
+            { emoji: '🙄', name: 'Mata Memutar' },
+            { emoji: '😬', name: 'Meringis' },
+            { emoji: '🤥', name: 'Wajah Berbohong' },
+            { emoji: '😌', name: 'Lega' },
+            { emoji: '😔', name: 'Sedih' },
+            { emoji: '😪', name: 'Mengantuk' },
+            { emoji: '🤤', name: 'Ngiler' },
+            { emoji: '😴', name: 'Tidur' },
+            { emoji: '😷', name: 'Masker Wajah' },
+            { emoji: '🤒', name: 'Termometer' },
+            { emoji: '🤕', name: 'Kepala Diperban' },
+            { emoji: '🤢', name: 'Mual' },
+            { emoji: '🤮', name: 'Muntah' },
+            { emoji: '🤧', name: 'Bersin' },
+            { emoji: '🥵', name: 'Wajah Panas' },
+            { emoji: '🥶', name: 'Wajah Dingin' },
+            { emoji: '🥴', name: 'Wajah Pusing' },
+            { emoji: '😵', name: 'Kepala Pusing' },
+            { emoji: '😵‍💫', name: 'Pusing dengan Bintang' },
+            { emoji: '🤯', name: 'Kepala Meledak' },
+            { emoji: '🤠', name: 'Topi Koboy' },
+            { emoji: '🥳', name: 'Wajah Pesta' },
+            { emoji: '🥸', name: 'Wajah Menyamar' },
+            { emoji: '😎', name: 'Kacamata Hitam' },
+            { emoji: '🤓', name: 'Wajah Kutu Buku' },
+            { emoji: '🧐', name: 'Wajah dengan Monocle' },
+            { emoji: '😕', name: 'Wajah Bingung' },
+            { emoji: '🫤', name: 'Wajah dengan Mulut Diagonal' },
+            { emoji: '😟', name: 'Wajah Khawatir' },
+            { emoji: '🙁', name: 'Wajah Sedikit Cemberut' },
+            { emoji: '☹️', name: 'Wajah Cemberut' },
+            { emoji: '😮', name: 'Wajah Terkejut' },
+            { emoji: '😯', name: 'Wajah Terkejut Diam' },
+            { emoji: '😲', name: 'Wajah Terkesiap' },
+            { emoji: '😳', name: 'Wajah Merona' },
+            { emoji: '🥺', name: 'Wajah Memelas' },
+            { emoji: '🥹', name: 'Wajah dengan Air Mata Tertahan' },
+            { emoji: '😦', name: 'Wajah Cemberut dengan Mulut Terbuka' },
+            { emoji: '😧', name: 'Wajah Menderita' },
+            { emoji: '😨', name: 'Wajah Takut' },
+            { emoji: '😰', name: 'Wajah Cemas Berkeringat' },
+            { emoji: '😥', name: 'Wajah Sedih Lega' },
+            { emoji: '😢', name: 'Wajah Menangis' },
+            { emoji: '😭', name: 'Wajah Menangis Keras' },
+            { emoji: '😱', name: 'Wajah Berteriak Takut' },
+            { emoji: '😖', name: 'Wajah Frustrasi' },
+            { emoji: '😣', name: 'Wajah Sakit Hati' },
+            { emoji: '😞', name: 'Wajah Kecewa' },
+            { emoji: '😓', name: 'Wajah Sedih Berkeringat' },
+            { emoji: '😩', name: 'Wajah Lelah' },
+            { emoji: '😫', name: 'Wajah Capek' },
+            { emoji: '🥱', name: 'Wajah Menguap' },
+            { emoji: '😤', name: 'Wajah Mendidih' },
+            { emoji: '😡', name: 'Wajah Marah' },
+            { emoji: '😠', name: 'Wajah Kesal' },
+            { emoji: '🤬', name: 'Simbol di Mulut' },
+            { emoji: '😈', name: 'Tersenyum Jahat' },
+            { emoji: '👿', name: 'Iblis Marah' },
+            { emoji: '💀', name: 'Tengkorak' },
+            { emoji: '☠️', name: 'Tulang Tengkorak' },
+            { emoji: '💩', name: 'Kotoran' },
+            { emoji: '🤡', name: 'Badut' },
+            { emoji: '👹', name: 'Ogre' },
+            { emoji: '👺', name: 'Goblin' },
+            { emoji: '👻', name: 'Hantu' },
+            { emoji: '👽', name: 'Alien' },
+            { emoji: '👾', name: 'Monster Alien' },
+            { emoji: '🤖', name: 'Robot' },
+            { emoji: '😺', name: 'Kucing Tersenyum' },
+            { emoji: '😸', name: 'Kucing Tersenyum dengan Mata Bahagia' },
+            { emoji: '😹', name: 'Kucing Tertawa Air Mata' },
+            { emoji: '😻', name: 'Kucing dengan Mata Berbentuk Hati' },
+            { emoji: '😼', name: 'Kucing Senyum Samping' },
+            { emoji: '😽', name: 'Kucing Mencium' },
+            { emoji: '🙀', name: 'Kucing Capek' },
+            { emoji: '😿', name: 'Kucing Menangis' },
+            { emoji: '😾', name: 'Kucing Cemberut' },
+            { emoji: '🙈', name: 'Monyet Tutup Mata' },
+            { emoji: '🙉', name: 'Monyet Tutup Telinga' },
+            { emoji: '🙊', name: 'Monyet Tutup Mulut' },
+            { emoji: '💌', name: 'Surat Cinta' },
+            { emoji: '💘', name: 'Panah di Hati' },
+            { emoji: '💝', name: 'Hati dengan Pita' },
+            { emoji: '💖', name: 'Hati Berkilau' },
+            { emoji: '💗', name: 'Hati Bertumbuh' },
+            { emoji: '💓', name: 'Hati Berdebar' },
+            { emoji: '💞', name: 'Hati Berputar' },
+            { emoji: '💕', name: 'Dua Hati' },
+            { emoji: '💟', name: 'Hati Dekorasi' },
+            { emoji: '❣️', name: 'Tanda Seru Hati' },
+            { emoji: '💔', name: 'Hati Patah' },
+            { emoji: '❤️‍🔥', name: 'Hati Terbakar' },
+            { emoji: '❤️‍🩹', name: 'Hati Disembuhkan' },
+            { emoji: '❤️', name: 'Hati Merah' },
+            { emoji: '🧡', name: 'Hati Oranye' },
+            { emoji: '💛', name: 'Hati Kuning' },
+            { emoji: '💚', name: 'Hati Hijau' },
+            { emoji: '💙', name: 'Hati Biru' },
+            { emoji: '💜', name: 'Hati Ungu' },
+            { emoji: '🤎', name: 'Hati Cokelat' },
+            { emoji: '🖤', name: 'Hati Hitam' },
+            { emoji: '🤍', name: 'Hati Putih' },
+            { emoji: '💋', name: 'Bekas Lipstik' },
+            { emoji: '💯', name: '100 Poin' },
+            { emoji: '💢', name: 'Simbol Marah' },
+            { emoji: '💥', name: 'Ledakan' },
+            { emoji: '💫', name: 'Pusing' },
+            { emoji: '💦', name: 'Tetes Keringat' },
+            { emoji: '💨', name: 'Lari Cepat' },
+            { emoji: '🕳️', name: 'Lubang' },
+            { emoji: '💣', name: 'Bom' },
+            { emoji: '💬', name: 'Gelembung Bicara' },
+            { emoji: '👁️‍🗨️', name: 'Mata dalam Gelembung' },
+            { emoji: '🗨️', name: 'Gelembung Bicara Kiri' },
+            { emoji: '🗯️', name: 'Gelembung Marah' },
+            { emoji: '💭', name: 'Gelembung Pikiran' },
+            { emoji: '💤', name: 'Tidur' }
+        ];
 
         // ==================== REALTIME LISTENERS ====================
         function setupRealtimeListeners() {
@@ -1352,6 +2214,16 @@
                 safeRender();
             });
 
+            db.collection('posts').orderBy('createdAt', 'desc').limit(50).onSnapshot((snapshot) => {
+                posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                safeRender();
+            });
+
+            db.collection('comments').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
+                comments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                safeRender();
+            });
+
             db.collection('follows').onSnapshot((snapshot) => {
                 follows = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 calculateFollowers();
@@ -1384,6 +2256,14 @@
                     userTitles[doc.id] = doc.data().titles || [];
                 });
             });
+
+            db.collection('verified').onSnapshot((snapshot) => {
+                userVerified = {};
+                snapshot.docs.forEach(doc => {
+                    userVerified[doc.id] = doc.data().verified || false;
+                });
+                safeRender();
+            });
         }
 
         function calculateFollowers() {
@@ -1407,7 +2287,8 @@
             const userChats = chats.filter(c => c.userId === userId).length;
             const userFeeds = feeds.filter(f => f.userId === userId).length;
             const userStoriesCount = stories.filter(s => s.userId === userId).length;
-            const userPhotos = 0; // TODO: Track photo uploads
+            const userPosts = posts.filter(p => p.userId === userId).length;
+            const userComments = comments.filter(c => c.userId === userId).length;
             const userPointsTotal = userPoints[userId] || 0;
             const followersCount = userFollowers[userId]?.length || 0;
             const followingCount = userFollowing[userId]?.length || 0;
@@ -1442,10 +2323,11 @@
             if (followingCount >= 50 && !currentBadges.includes('friendship')) earnedBadges.push('friendship');
             if (followersCount >= 100 && !currentBadges.includes('popular')) earnedBadges.push('popular');
             if (userStoriesCount >= 10 && !currentBadges.includes('storyteller')) earnedBadges.push('storyteller');
-            if (userPhotos >= 20 && !currentBadges.includes('photographer')) earnedBadges.push('photographer');
+            if (userPosts >= 20 && !currentBadges.includes('photographer')) earnedBadges.push('photographer');
             if (userChats >= 1000 && !currentBadges.includes('veteran_chatter')) earnedBadges.push('veteran_chatter');
             if (userChats >= 5000 && !currentBadges.includes('legend_chatter')) earnedBadges.push('legend_chatter');
             if (userProjects >= 50 && !currentBadges.includes('super_creator')) earnedBadges.push('super_creator');
+            if (userComments >= 100 && !currentBadges.includes('social_butterfly')) earnedBadges.push('social_butterfly');
             
             if (earnedBadges.length > 0) {
                 try {
@@ -1626,6 +2508,8 @@
             const userProjects = projects.filter(p => p.createdBy === userId).length;
             const userChats = chats.filter(c => c.userId === userId).length;
             const userFeeds = feeds.filter(f => f.userId === userId).length;
+            const userPosts = posts.filter(p => p.userId === userId).length;
+            const userComments = comments.filter(c => c.userId === userId).length;
             const consecutive = userConsecutiveDays[userId] || 0;
             const earlyBird = userEarlyBird[userId] || 0;
             const nightOwl = userNightOwl[userId] || 0;
@@ -1647,6 +2531,8 @@
                 else if (mission.type === 'points') requirement = points;
                 else if (mission.type === 'follow') requirement = following;
                 else if (mission.type === 'follower') requirement = followers;
+                else if (mission.type === 'post') requirement = userPosts;
+                else if (mission.type === 'comment') requirement = userComments;
                 else requirement = userAttendance;
                 
                 if (requirement >= mission.requirement) {
@@ -1829,7 +2715,9 @@
                     userName: userData?.name || currentUser.displayName,
                     userPhoto: userData?.photo || currentUser.photoURL,
                     message: message,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    userRole: userRole,
+                    userVerified: userVerified[currentUser.uid] || false
                 };
                 
                 await db.collection('chats').add(chatData);
@@ -1852,7 +2740,9 @@
                     userPhoto: userData?.photo || currentUser.photoURL,
                     image: imageUrl,
                     views: [],
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    userRole: userRole,
+                    userVerified: userVerified[currentUser.uid] || false
                 };
                 
                 await db.collection('stories').add(storyData);
@@ -1883,374 +2773,84 @@
             renderMainContent();
         };
 
-        // ==================== FEEDS ====================
-        window.createFeed = async (data) => {
+        // ==================== POSTS ====================
+        window.createPost = async (content, imageUrl) => {
             if (!currentUser) return;
             
             try {
-                const feedData = {
+                const postData = {
                     userId: currentUser.uid,
                     userName: userData?.name || currentUser.displayName,
                     userPhoto: userData?.photo || currentUser.photoURL,
-                    type: data.type || 'post',
-                    content: data.content,
-                    image: data.image || null,
+                    content: content,
+                    image: imageUrl || null,
                     likes: [],
-                    comments: [],
-                    shares: 0,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    views: 0,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    userRole: userRole,
+                    userVerified: userVerified[currentUser.uid] || false
                 };
                 
-                await db.collection('feeds').add(feedData);
+                await db.collection('posts').add(postData);
                 showToast('Postingan berhasil dibuat!', 'success');
                 
             } catch (error) {
-                console.error('Error creating feed:', error);
+                console.error('Error creating post:', error);
             }
         };
 
-        window.likeFeed = async (feedId) => {
-            if (!currentUser) return;
-            
-            const feedRef = db.collection('feeds').doc(feedId);
-            const feed = feeds.find(f => f.id === feedId);
-            
-            if (!feed) return;
-            
-            const likes = feed.likes || [];
-            const userLiked = likes.includes(currentUser.uid);
-            
-            try {
-                if (userLiked) {
-                    await feedRef.update({
-                        likes: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
-                    });
-                } else {
-                    await feedRef.update({
-                        likes: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
-                    });
-                }
-            } catch (error) {
-                console.error('Error liking feed:', error);
-            }
-        };
-
-        window.commentOnFeed = async (feedId, comment) => {
+        window.addComment = async (postId, comment) => {
             if (!currentUser || !comment.trim()) return;
             
             const commentData = {
+                postId: postId,
                 userId: currentUser.uid,
                 userName: userData?.name || currentUser.displayName,
                 userPhoto: userData?.photo || currentUser.photoURL,
-                comment: comment,
-                createdAt: new Date()
+                content: comment,
+                createdAt: new Date(),
+                userRole: userRole,
+                userVerified: userVerified[currentUser.uid] || false
             };
             
             try {
-                await db.collection('feeds').doc(feedId).update({
-                    comments: firebase.firestore.FieldValue.arrayUnion(commentData)
-                });
+                await db.collection('comments').add(commentData);
                 showToast('Komentar ditambahkan', 'success');
             } catch (error) {
                 console.error('Error commenting:', error);
             }
         };
 
-        // ==================== FOLLOW SYSTEM ====================
-        window.followUser = async (userId) => {
-            if (!currentUser || userId === currentUser.uid) return;
+        window.addReaction = async (postId, emoji) => {
+            if (!currentUser) return;
             
-            const followId = `${currentUser.uid}_${userId}`;
-            const followRef = db.collection('follows').doc(followId);
-            const isFollowing = userFollowing[currentUser.uid]?.includes(userId);
+            const postRef = db.collection('posts').doc(postId);
+            const post = posts.find(p => p.id === postId);
             
-            try {
-                if (isFollowing) {
-                    await followRef.delete();
-                    showToast('Berhenti mengikuti', 'info');
+            if (!post) return;
+            
+            const reactions = post.reactions || {};
+            const users = reactions[emoji] || [];
+            
+            if (users.includes(currentUser.uid)) {
+                // Remove reaction
+                const newUsers = users.filter(id => id !== currentUser.uid);
+                if (newUsers.length > 0) {
+                    reactions[emoji] = newUsers;
                 } else {
-                    await followRef.set({
-                        followerId: currentUser.uid,
-                        followingId: userId,
-                        followerName: userData?.name || currentUser.displayName,
-                        followingName: members.find(m => m.id === userId)?.name,
-                        createdAt: new Date()
-                    });
-                    showToast('Sekarang mengikuti', 'success');
+                    delete reactions[emoji];
                 }
-            } catch (error) {
-                console.error('Error following:', error);
-            }
-        };
-
-        // ==================== FUNGSI ABSENSI ====================
-        window.submitAttendance = async function() {
-            if (!currentUser) {
-                showToast('Silakan login terlebih dahulu', 'error');
-                return;
+            } else {
+                // Add reaction
+                reactions[emoji] = [...users, currentUser.uid];
             }
             
             try {
-                const select = document.getElementById('attendance-member-select');
-                const manualName = document.getElementById('attendance-manual-name')?.value.trim();
-                const manualClass = document.getElementById('attendance-manual-class')?.value.trim();
-                
-                let userId, name, className, photo;
-                
-                if (select && select.value) {
-                    const selectedOption = select.options[select.selectedIndex];
-                    userId = select.value;
-                    name = selectedOption.getAttribute('data-name');
-                    className = selectedOption.getAttribute('data-class') || '';
-                    photo = selectedOption.getAttribute('data-photo') || `https://ui-avatars.com/api/?name=${name}&background=00d4ff&color=fff`;
-                } 
-                else if (manualName) {
-                    name = manualName;
-                    className = manualClass || 'Kelas tidak diisi';
-                    userId = 'manual_' + Date.now();
-                    photo = `https://ui-avatars.com/api/?name=${name}&background=00d4ff&color=fff`;
-                } 
-                else {
-                    showToast('Pilih anggota atau isi nama manual', 'warning');
-                    return;
-                }
-                
-                const today = moment().format('YYYY-MM-DD');
-                const now = moment().format('HH:mm');
-                const hari = moment().format('dddd');
-                
-                if (userId && !userId.startsWith('manual_')) {
-                    const existing = await db.collection('attendance')
-                        .where('userId', '==', userId)
-                        .where('date', '==', today)
-                        .get();
-                    
-                    if (!existing.empty) {
-                        showToast('Anggota ini sudah absen hari ini', 'error');
-                        return;
-                    }
-                }
-                
-                const attendanceData = {
-                    userId: userId,
-                    name: name,
-                    email: currentUser.email || '',
-                    photo: photo,
-                    class: className,
-                    date: today,
-                    day: hari,
-                    time: now,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    submittedBy: currentUser.uid,
-                    submittedByName: currentUser.displayName || currentUser.email
-                };
-                
-                await db.runTransaction(async (transaction) => {
-                    const attendanceRef = db.collection('attendance').doc();
-                    transaction.set(attendanceRef, attendanceData);
-                    
-                    if (!userId.startsWith('manual_')) {
-                        const memberRef = db.collection('members').doc(userId);
-                        const memberDoc = await transaction.get(memberRef);
-                        if (memberDoc.exists) {
-                            const currentTotal = memberDoc.data().totalAttendance || 0;
-                            transaction.update(memberRef, {
-                                totalAttendance: currentTotal + 1,
-                                lastAttendance: today
-                            });
-                        }
-                    }
-                });
-                
-                const currentPoints = userPoints[currentUser.uid] || 0;
-                await db.collection('points').doc(currentUser.uid).set({
-                    points: currentPoints + 10,
-                    updatedAt: new Date()
-                }, { merge: true });
-                
-                playSound('coin');
-                
-                if (select) select.value = '';
-                if (document.getElementById('attendance-manual-name')) {
-                    document.getElementById('attendance-manual-name').value = '';
-                }
-                if (document.getElementById('attendance-manual-class')) {
-                    document.getElementById('attendance-manual-class').value = '';
-                }
-                
-                showToast('Absensi berhasil untuk ' + name + ' +10 points', 'success');
-                
+                await postRef.update({ reactions: reactions });
+                showToast(`Reaksi ${emoji} ditambahkan!`, 'success');
+                toggleReactionModal();
             } catch (error) {
-                console.error('Error:', error);
-                showToast('Gagal absen: ' + error.message, 'error');
-            }
-        };
-
-        // ==================== FUNGSI DEVELOPER POWER ====================
-        window.setUserLevel = async (userId, newLevel) => {
-            if (userRole !== 'developer') {
-                showToast('Fitur ini hanya untuk developer!', 'error');
-                return;
-            }
-            
-            try {
-                const level = parseInt(newLevel);
-                if (isNaN(level) || level < 1 || level > 100) {
-                    showToast('Level harus 1-100!', 'error');
-                    return;
-                }
-                
-                const titles = ['Baru', 'Aktif', 'Super Aktif', 'Veteran', 'Legenda', 'Ultra', 'Mega', 'Hyper', 'Grand', 'Master', 'Dewa'];
-                const icons = ['🆕', '🔥', '⚡', '🎯', '🏆', '💫', '✨', '⭐', '🌟', '👑', '👑'];
-                
-                let titleIndex = Math.min(Math.floor(level / 10), titles.length - 1);
-                
-                await db.collection('members').doc(userId).update({
-                    level: level,
-                    levelTitle: titles[titleIndex],
-                    levelIcon: icons[titleIndex]
-                });
-                
-                showToast('✅ Level berhasil diubah!', 'success');
-                
-            } catch (error) {
-                showToast('Gagal: ' + error.message, 'error');
-            }
-        };
-
-        window.makeAdmin = async (userId) => {
-            if (userRole !== 'developer') {
-                showToast('Fitur ini hanya untuk developer!', 'error');
-                return;
-            }
-            
-            try {
-                await db.collection('members').doc(userId).update({
-                    role: 'admin'
-                });
-                showToast('✅ Anggota berhasil dijadikan admin!', 'success');
-                
-            } catch (error) {
-                showToast('Gagal: ' + error.message, 'error');
-            }
-        };
-
-        window.removeAdmin = async (userId) => {
-            if (userRole !== 'developer') {
-                showToast('Fitur ini hanya untuk developer!', 'error');
-                return;
-            }
-            
-            try {
-                await db.collection('members').doc(userId).update({
-                    role: 'member'
-                });
-                showToast('✅ Admin berhasil dihapus!', 'success');
-                
-            } catch (error) {
-                showToast('Gagal: ' + error.message, 'error');
-            }
-        };
-
-        window.devAddBadge = async (userId, badgeId) => {
-            if (userRole !== 'developer') {
-                showToast('Fitur ini hanya untuk developer!', 'error');
-                return;
-            }
-            
-            try {
-                let currentBadges = userBadges[userId]?.badges || [];
-                
-                if (!currentBadges.includes(badgeId)) {
-                    const newBadges = [...currentBadges, badgeId];
-                    
-                    await db.collection('badges').doc(userId).set({
-                        badges: newBadges,
-                        updatedAt: new Date()
-                    }, { merge: true });
-                    
-                    const badge = badges.find(b => b.id === badgeId);
-                    showToast(`✅ Berhasil menambah badge ${badge?.name || badgeId}!`, 'success');
-                } else {
-                    showToast('Badge sudah dimiliki user!', 'warning');
-                }
-            } catch (error) {
-                console.error('Error adding badge:', error);
-                showToast('Gagal: ' + error.message, 'error');
-            }
-        };
-
-        window.devAddPoints = async (userId, points) => {
-            if (userRole !== 'developer') return;
-            
-            const currentPoints = userPoints[userId] || 0;
-            const newPoints = currentPoints + parseInt(points);
-            
-            await db.collection('points').doc(userId).set({
-                points: newPoints,
-                updatedAt: new Date()
-            }, { merge: true });
-            
-            showToast(`✅ Menambah ${points} points!`, 'success');
-        };
-
-        window.devCompleteMission = async (userId, missionId) => {
-            if (userRole !== 'developer') return;
-            
-            const userCompleted = userMissions[userId]?.completed || [];
-            if (!userCompleted.includes(missionId)) {
-                userCompleted.push(missionId);
-                await db.collection('missions').doc(userId).set({
-                    completed: userCompleted,
-                    claimed: userMissions[userId]?.claimed || [],
-                    updatedAt: new Date()
-                }, { merge: true });
-                showToast('✅ Misi diselesaikan!', 'success');
-            }
-        };
-
-        window.devAddTitle = async (userId, title) => {
-            if (userRole !== 'developer') return;
-            
-            let currentTitles = userTitles[userId] || [];
-            if (!currentTitles.includes(title)) {
-                currentTitles.push(title);
-                await db.collection('titles').doc(userId).set({
-                    titles: currentTitles,
-                    updatedAt: new Date()
-                }, { merge: true });
-                showToast('✅ Title ditambahkan!', 'success');
-            }
-        };
-
-        window.devResetAll = async () => {
-            if (userRole !== 'developer') return;
-            
-            const result = await Swal.fire({
-                title: '⚠️ Reset Semua Data?',
-                text: 'Data yang dihapus tidak dapat dikembalikan!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Reset!',
-                cancelButtonText: 'Batal'
-            });
-
-            if (result.isConfirmed) {
-                const collections = ['members', 'attendance', 'projects', 'schedules', 'notifications', 'teachers', 'badges', 'levels', 'points', 'missions', 'equippedBadges', 'chats', 'consecutiveDays', 'earlyBird', 'nightOwl', 'stories', 'feeds', 'follows', 'titles'];
-                
-                for (const collection of collections) {
-                    const snapshot = await db.collection(collection).get();
-                    const batch = db.batch();
-                    snapshot.docs.forEach(doc => {
-                        batch.delete(doc.ref);
-                    });
-                    await batch.commit();
-                }
-                
-                showToast('✅ Semua data berhasil direset!', 'success');
-                setTimeout(() => window.location.reload(), 2000);
+                console.error('Error adding reaction:', error);
             }
         };
 
@@ -2342,6 +2942,13 @@
             showLoginModal = false;
             safeRender();
             showToast(`Selamat datang, ${userData?.name || user.displayName}!`, 'success');
+            
+            // Show notification permission after login
+            setTimeout(() => {
+                if ('Notification' in window && Notification.permission === 'default') {
+                    showNotificationsPermission();
+                }
+            }, 2000);
         }
 
         window.register = async (e) => {
@@ -2402,6 +3009,75 @@
             userRole = 'member';
             renderMainContent();
             showToast('Berhasil logout');
+        };
+
+        // ==================== CLOUDINARY UPLOAD ====================
+        window.openCloudinaryUploader = function(callback) {
+            cloudinary.openUploadWidget({
+                cloudName: CLOUDINARY_CLOUD_NAME,
+                uploadPreset: CLOUDINARY_UPLOAD_PRESET,
+                apiKey: CLOUDINARY_API_KEY,
+                sources: ['local', 'url', 'camera'],
+                cropping: true,
+                croppingAspectRatio: 1,
+                multiple: false,
+                styles: {
+                    palette: {
+                        window: "#1a1f35",
+                        windowBorder: "#00d4ff",
+                        tabIcon: "#00d4ff",
+                        menuIcons: "#ffffff",
+                        textDark: "#000000",
+                        textLight: "#ffffff",
+                        link: "#00d4ff",
+                        action: "#0a5cff",
+                        error: "#ff4b4b",
+                        inProgress: "#00d4ff",
+                        complete: "#10b981",
+                        sourceBg: "#0a0f1e"
+                    }
+                }
+            }, (error, result) => {
+                if (!error && result && result.event === 'success') {
+                    callback(result.info.secure_url);
+                } else if (error) {
+                    showToast('Gagal upload: ' + error.message, 'error');
+                }
+            });
+        };
+
+        window.uploadProfilePhoto = function() {
+            openCloudinaryUploader((url) => {
+                document.getElementById('profile-preview').src = url;
+                document.getElementById('profile-url-input').value = url;
+                showToast('Foto berhasil diupload!', 'success');
+            });
+        };
+
+        window.uploadProjectPhoto = function() {
+            openCloudinaryUploader((url) => {
+                document.getElementById('project-preview').src = url;
+                document.getElementById('project-preview').style.display = 'block';
+                document.getElementById('project-placeholder').style.display = 'none';
+                document.getElementById('project-image').value = url;
+                showToast('Foto proyek berhasil diupload!', 'success');
+            });
+        };
+
+        window.uploadStoryPhoto = function() {
+            openCloudinaryUploader((url) => {
+                createStory(url);
+            });
+        };
+
+        window.uploadPostPhoto = function() {
+            openCloudinaryUploader((url) => {
+                document.getElementById('post-preview').src = url;
+                document.getElementById('post-preview').style.display = 'block';
+                document.getElementById('post-placeholder').style.display = 'none';
+                document.getElementById('post-image').value = url;
+                showToast('Foto postingan berhasil diupload!', 'success');
+            });
         };
 
         // ==================== NOTIFIKASI ====================
@@ -2517,181 +3193,12 @@
                     projects: projects.filter(p => p.createdBy === m.id).length,
                     level: level,
                     points: userPoints[m.id] || 0,
-                    badges: userBadges[m.id]?.badges || [],
+                    badges: userBadges[m.id]?.badges?.length || 0,
                     followers: userFollowers[m.id]?.length || 0,
                     following: userFollowing[m.id]?.length || 0
                 };
             }).sort((a, b) => b.points - a.points || b.attendance - a.attendance);
         }
-
-        // ==================== NAVIGASI ====================
-        window.navigateTo = (page) => {
-            currentPage = page;
-            renderMainContent();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            const menu = document.getElementById('mobile-menu');
-            const hamburger = document.getElementById('hamburger');
-            if (menu && menu.classList.contains('show')) {
-                menu.classList.remove('show');
-                hamburger?.classList.remove('active');
-            }
-        };
-
-        window.toggleMobileMenu = () => {
-            const menu = document.getElementById('mobile-menu');
-            const hamburger = document.getElementById('hamburger');
-            if (menu && hamburger) {
-                menu.classList.toggle('show');
-                hamburger.classList.toggle('active');
-            }
-        };
-
-        window.toggleNotificationPanel = () => {
-            showNotificationPanel = !showNotificationPanel;
-            updateNotificationPanel();
-        };
-
-        window.toggleLoginModal = () => {
-            showLoginModal = !showLoginModal;
-            showRegisterModal = false;
-            showForgotModal = false;
-            renderMainContent();
-        };
-
-        window.toggleRegisterModal = () => {
-            showRegisterModal = !showRegisterModal;
-            showLoginModal = false;
-            renderMainContent();
-        };
-
-        window.toggleForgotModal = () => {
-            showForgotModal = !showForgotModal;
-            showLoginModal = false;
-            renderMainContent();
-        };
-
-        window.toggleEditProfileModal = () => {
-            showEditProfileModal = !showEditProfileModal;
-            if (!showEditProfileModal) selectedMember = null;
-            renderMainContent();
-        };
-
-        window.toggleAddProjectModal = () => {
-            showAddProjectModal = !showAddProjectModal;
-            renderMainContent();
-        };
-
-        window.toggleEditProjectModal = () => {
-            showEditProjectModal = !showEditProjectModal;
-            if (!showEditProjectModal) selectedProject = null;
-            renderMainContent();
-        };
-
-        window.toggleAddScheduleModal = () => {
-            showAddScheduleModal = !showAddScheduleModal;
-            renderMainContent();
-        };
-
-        window.toggleEditScheduleModal = () => {
-            showEditScheduleModal = !showEditScheduleModal;
-            if (!showEditScheduleModal) selectedSchedule = null;
-            renderMainContent();
-        };
-
-        window.toggleAddNotificationModal = () => {
-            showAddNotificationModal = !showAddNotificationModal;
-            renderMainContent();
-        };
-
-        window.toggleAddTeacherModal = () => {
-            showAddTeacherModal = !showAddTeacherModal;
-            renderMainContent();
-        };
-
-        window.toggleEditTeacherModal = () => {
-            showEditTeacherModal = !showEditTeacherModal;
-            if (!showEditTeacherModal) selectedTeacher = null;
-            renderMainContent();
-        };
-
-        window.toggleAttendanceHistoryModal = () => {
-            showAttendanceHistoryModal = !showAttendanceHistoryModal;
-            renderMainContent();
-        };
-
-        window.toggleLeaderboardModal = () => {
-            showLeaderboardModal = !showLeaderboardModal;
-            renderMainContent();
-        };
-
-        window.toggleAddAdminModal = () => {
-            showAddAdminModal = !showAddAdminModal;
-            renderMainContent();
-        };
-
-        window.toggleRemoveAdminModal = () => {
-            showRemoveAdminModal = !showRemoveAdminModal;
-            renderMainContent();
-        };
-
-        window.toggleSetLevelModal = () => {
-            showSetLevelModal = !showSetLevelModal;
-            renderMainContent();
-        };
-
-        window.toggleDevPowerModal = () => {
-            showDevPowerModal = !showDevPowerModal;
-            renderMainContent();
-        };
-
-        window.toggleMissionsModal = () => {
-            showMissionsModal = !showMissionsModal;
-            renderMainContent();
-        };
-
-        window.toggleBadgeUseModal = () => {
-            showBadgeUseModal = !showBadgeUseModal;
-            if (!showBadgeUseModal) selectedBadge = null;
-            renderMainContent();
-        };
-
-        window.toggleQRModal = () => {
-            showQRModal = !showQRModal;
-            if (showQRModal && currentUser) {
-                setTimeout(() => {
-                    generateQRCode(window.location.href + '?user=' + currentUser.uid);
-                }, 100);
-            }
-            renderMainContent();
-        };
-
-        window.toggleChatModal = () => {
-            showChatModal = !showChatModal;
-            renderMainContent();
-        };
-
-        window.toggleMysteryBoxModal = () => {
-            showMysteryBoxModal = !showMysteryBoxModal;
-            renderMainContent();
-        };
-
-        window.toggleStoryModal = () => {
-            showStoryModal = !showStoryModal;
-            if (!showStoryModal) selectedStory = null;
-            renderMainContent();
-        };
-
-        window.toggleFeedModal = () => {
-            showFeedModal = !showFeedModal;
-            renderMainContent();
-        };
-
-        window.showEditProfile = () => {
-            showEditProfileModal = true;
-            selectedMember = null;
-            renderMainContent();
-        };
 
         // ==================== NOTIFIKASI PANEL ====================
         function updateNotificationPanel() {
@@ -2724,7 +3231,7 @@
             }
         }
 
-        // ==================== RENDER UTAMA ====================
+        // ==================== RENDER FUNCTIONS ====================
         function renderMainContent() {
             const app = document.getElementById('app');
             
@@ -2753,6 +3260,7 @@
                             <button onclick="toggleChatModal()" class="hover:text-blue-400 transition">Chat</button>
                             <button onclick="toggleMysteryBoxModal()" class="hover:text-yellow-400 transition">🎁 Box</button>
                             <button onclick="toggleFeedModal()" class="hover:text-green-400 transition">📝 Feed</button>
+                            <button onclick="toggleQRModal()" class="hover:text-purple-400 transition">📱 Scan QR</button>
                         </div>
                         
                         <div class="flex items-center space-x-2 sm:space-x-4">
@@ -2773,6 +3281,13 @@
                                              onerror="this.src='https://ui-avatars.com/api/?name=${userData?.name || 'User'}&background=00d4ff&color=fff'">
                                         ${userRole === 'developer' ? '<span class="developer-badge">DEV</span>' : ''}
                                         ${userRole === 'admin' ? '<span class="admin-badge">ADMIN</span>' : ''}
+                                        ${userVerified[currentUser.uid] ? `
+                                            <span class="verified-badge-svg small">
+                                                <svg aria-label="Verified" width="18" height="18" viewBox="0 0 40 40" fill="#0095F6" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z"/>
+                                                </svg>
+                                            </span>
+                                        ` : ''}
                                     </div>
                                     <div class="absolute right-0 mt-2 w-48 glass-card hidden group-hover:block p-2 z-50">
                                         <div class="p-2 border-b border-white/10">
@@ -2787,6 +3302,16 @@
                                             <p class="text-xs text-pink-400 mt-1">
                                                 👥 Followers: ${userFollowers[currentUser.uid]?.length || 0}
                                             </p>
+                                            ${userVerified[currentUser.uid] ? `
+                                                <p class="text-xs text-blue-400 mt-1 flex items-center">
+                                                    <span class="verified-badge-svg small mr-1">
+                                                        <svg aria-label="Verified" width="14" height="14" viewBox="0 0 40 40" fill="#0095F6" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Z"/>
+                                                        </svg>
+                                                    </span>
+                                                    Verified Account
+                                                </p>
+                                            ` : ''}
                                         </div>
                                         <button onclick="showEditProfile()" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm">
                                             <i class="fas fa-user-edit mr-2"></i>Edit Profile
@@ -2794,6 +3319,10 @@
                                         
                                         <button onclick="toggleQRModal()" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm">
                                             <i class="fas fa-qrcode mr-2"></i>QR Code Saya
+                                        </button>
+                                        
+                                        <button onclick="showFollowers('${currentUser.uid}')" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm">
+                                            <i class="fas fa-users mr-2"></i>Lihat Pengikut
                                         </button>
                                         
                                         ${(userRole === 'developer' || userRole === 'admin') ? `
@@ -2811,6 +3340,9 @@
                                             <button onclick="showAddTeacherModal = true; renderMainContent()" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm text-purple-400">
                                                 <i class="fas fa-chalkboard-teacher mr-2"></i>Tambah Pembina
                                             </button>
+                                            <button onclick="showAddPostModal = true; renderMainContent()" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm text-pink-400">
+                                                <i class="fas fa-newspaper mr-2"></i>Buat Postingan
+                                            </button>
                                         ` : ''}
                                         
                                         ${userRole === 'developer' ? `
@@ -2827,6 +3359,12 @@
                                             </button>
                                             <button onclick="toggleDevPowerModal()" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm text-pink-400">
                                                 <i class="fas fa-bolt mr-2"></i>Dev Power
+                                            </button>
+                                            <button onclick="toggleFollowersModal()" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm text-orange-400">
+                                                <i class="fas fa-user-plus mr-2"></i>Tambah Followers
+                                            </button>
+                                            <button onclick="toggleGroupLinkModal()" class="block w-full text-left p-2 hover:bg-white/10 rounded text-sm text-purple-400">
+                                                <i class="fas fa-link mr-2"></i>Link Grup
                                             </button>
                                         ` : ''}
                                         
@@ -2923,6 +3461,9 @@
                             <button onclick="showEditProfile(); toggleMobileMenu()" class="mobile-menu-item w-full text-left">
                                 <i class="fas fa-user-edit mr-3"></i>Edit Profile
                             </button>
+                            <button onclick="showFollowers('${currentUser.uid}'); toggleMobileMenu()" class="mobile-menu-item w-full text-left">
+                                <i class="fas fa-users mr-3"></i>Lihat Pengikut
+                            </button>
                             <button onclick="logout(); toggleMobileMenu()" class="mobile-menu-item w-full text-left text-red-400">
                                 <i class="fas fa-sign-out-alt mr-3"></i>Logout
                             </button>
@@ -2937,6 +3478,17 @@
                 <footer class="glass-effect py-8 px-4 mt-10">
                     <div class="max-w-6xl mx-auto text-center">
                         <p class="text-sm text-gray-400">© 2026 Robotik & Pemrograman - SMK TI Bali Global Karangasem</p>
+                        <div class="flex justify-center gap-4 mt-4">
+                            <button onclick="openGroupLink('wa')" class="group-link">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                            <button onclick="openGroupLink('tg')" class="group-link">
+                                <i class="fab fa-telegram"></i> Telegram
+                            </button>
+                            <button onclick="openGroupLink('dc')" class="group-link">
+                                <i class="fab fa-discord"></i> Discord
+                            </button>
+                        </div>
                         <p class="text-xs text-gray-500 mt-2">
                             Points: ⭐ ${userPoints[currentUser?.uid] || 0} | 
                             Badges: 🏅 ${userBadges[currentUser?.uid]?.badges?.length || 0} | 
@@ -2945,6 +3497,7 @@
                     </div>
                 </footer>
 
+                ${showNotificationsPermissionModal ? renderNotificationsPermissionModal() : ''}
                 ${showLoginModal ? renderLoginModal() : ''}
                 ${showRegisterModal ? renderRegisterModal() : ''}
                 ${showForgotModal ? renderForgotModal() : ''}
@@ -2969,6 +3522,13 @@
                 ${showEditTeacherModal ? renderEditTeacherModal() : ''}
                 ${showAttendanceHistoryModal ? renderAttendanceHistoryModal() : ''}
                 ${showLeaderboardModal ? renderLeaderboardModal() : ''}
+                ${showAddPostModal ? renderAddPostModal() : ''}
+                ${showCommentModal ? renderCommentModal() : ''}
+                ${showReactionModal ? renderReactionModal() : ''}
+                ${showFontSizeModal ? renderFontSizeModal() : ''}
+                ${showCropModal ? renderCropModal() : ''}
+                ${showFollowersModal ? renderFollowersModal() : ''}
+                ${showGroupLinkModal ? renderGroupLinkModal() : ''}
             `;
 
             updateNotificationPanel();
@@ -2998,6 +3558,7 @@
         function renderHomePage() {
             const myAttendance = currentUser ? attendanceHistory.filter(a => a.userId === currentUser.uid).length : 0;
             const myLevel = currentUser ? calculateLevel(myAttendance) : { level: 0, title: 'Baru', icon: '🆕' };
+            const recentPosts = posts.slice(0, 5);
             
             return `
                 <section class="min-h-[80vh] flex items-center justify-center px-4 py-10">
@@ -3016,6 +3577,13 @@
                                 ${stories.filter(s => moment(s.createdAt.toDate()).isAfter(moment().subtract(24, 'hours'))).map(story => `
                                     <div class="story-circle ${story.userId === currentUser?.uid ? 'has-story' : ''}" onclick="viewStory('${story.id}')">
                                         <img src="${story.userPhoto}" alt="${story.userName}">
+                                        ${story.userVerified ? `
+                                            <span class="verified-badge-svg small" style="position: absolute; bottom: 0; right: 0;">
+                                                <svg aria-label="Verified" width="14" height="14" viewBox="0 0 40 40" fill="#0095F6" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Z"/>
+                                                </svg>
+                                            </span>
+                                        ` : ''}
                                     </div>
                                 `).join('')}
                                 ${currentUser ? `
@@ -3118,50 +3686,138 @@
                     </div>
                 </section>
 
-                <!-- Recent Feeds -->
+                <!-- Recent Posts -->
                 <section class="py-10 px-4">
                     <div class="max-w-3xl mx-auto">
-                        <h2 class="text-2xl font-bold mb-6 roboto-font neon-text" data-aos="fade-up">📱 Feed Terbaru</h2>
+                        <h2 class="text-2xl font-bold mb-6 roboto-font neon-text" data-aos="fade-up">📱 Postingan Terbaru</h2>
                         
                         <div class="space-y-4">
-                            ${feeds.slice(0, 5).map(feed => `
-                                <div class="glass-card p-4 hover-scale" data-aos="fade-up">
-                                    <div class="flex items-center space-x-3 mb-3">
-                                        <img src="${feed.userPhoto}" class="w-10 h-10 rounded-full">
-                                        <div>
-                                            <p class="font-semibold">${feed.userName}</p>
-                                            <p class="text-xs text-gray-400">${feed.createdAt ? moment(feed.createdAt.toDate()).fromNow() : 'Baru saja'}</p>
+                            ${recentPosts.map(post => {
+                                const postComments = comments.filter(c => c.postId === post.id);
+                                const postReactions = post.reactions || {};
+                                
+                                return `
+                                    <div class="glass-card p-4 hover-scale ${post.userId === currentUser?.uid ? 'post-owner-badge' : ''}" data-aos="fade-up" style="font-size: ${userFontSize}px">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <div class="flex items-center space-x-3">
+                                                <img src="${post.userPhoto}" class="w-10 h-10 rounded-full" onerror="this.src='https://ui-avatars.com/api/?name=${post.userName}&background=00d4ff&color=fff'">
+                                                <div>
+                                                    <div class="flex items-center gap-2">
+                                                        <p class="font-semibold">${post.userName}</p>
+                                                        ${post.userVerified ? `
+                                                            <span class="verified-badge-svg small">
+                                                                <svg aria-label="Verified" width="14" height="14" viewBox="0 0 40 40" fill="#0095F6" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path fill-rule="evenodd" d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Z"/>
+                                                                </svg>
+                                                            </span>
+                                                        ` : ''}
+                                                        ${post.userRole === 'developer' ? '<span class="developer-badge">DEV</span>' : ''}
+                                                        ${post.userRole === 'admin' ? '<span class="admin-badge">ADMIN</span>' : ''}
+                                                    </div>
+                                                    <p class="text-xs text-gray-400">${post.createdAt ? moment(post.createdAt.toDate()).fromNow() : 'Baru saja'}</p>
+                                                </div>
+                                            </div>
+                                            
+                                            ${(post.userId === currentUser?.uid || userRole === 'developer' || userRole === 'admin') ? `
+                                                <div class="flex space-x-1">
+                                                    <button onclick="deletePost('${post.id}')" class="action-btn delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            ` : ''}
                                         </div>
+                                        
+                                        <p class="mb-3" style="font-size: ${userFontSize}px">${post.content}</p>
+                                        
+                                        ${post.image ? `<img src="${post.image}" class="w-full rounded-lg mb-3" style="max-height: 400px; object-fit: contain;">` : ''}
+                                        
+                                        <div class="flex items-center justify-between mb-3">
+                                            <div class="flex items-center space-x-4">
+                                                <button class="flex items-center space-x-1 like-counter ${post.likes?.includes(currentUser?.uid) ? 'liked' : ''}" onclick="likePost('${post.id}')">
+                                                    <i class="fas fa-heart"></i>
+                                                    <span class="text-sm">${post.likes?.length || 0}</span>
+                                                </button>
+                                                
+                                                <button class="flex items-center space-x-1" onclick="toggleCommentModal('${post.id}')">
+                                                    <i class="fas fa-comment"></i>
+                                                    <span class="text-sm">${postComments.length}</span>
+                                                </button>
+                                                
+                                                <button class="flex items-center space-x-1" onclick="toggleReactionModal('${post.id}')">
+                                                    <i class="fas fa-smile"></i>
+                                                    <span class="text-sm">Reaksi</span>
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="text-sm text-gray-400">
+                                                👁️ ${post.views || 0} views
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Reactions -->
+                                        ${Object.keys(postReactions).length > 0 ? `
+                                            <div class="flex gap-2 mb-3">
+                                                ${Object.entries(postReactions).map(([emoji, users]) => `
+                                                    <button class="flex items-center gap-1 bg-white/5 rounded-full px-2 py-1" onclick="toggleReactionModal('${post.id}', '${emoji}')">
+                                                        <span>${emoji}</span>
+                                                        <span class="text-xs">${users.length}</span>
+                                                    </button>
+                                                `).join('')}
+                                            </div>
+                                        ` : ''}
+                                        
+                                        <!-- Comments Preview -->
+                                        ${postComments.slice(0, 3).map(comment => `
+                                            <div class="flex items-start gap-2 mt-2 bg-white/5 p-2 rounded-lg">
+                                                <img src="${comment.userPhoto}" class="w-6 h-6 rounded-full">
+                                                <div class="flex-1">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="text-sm font-semibold">${comment.userName}</span>
+                                                        ${comment.userVerified ? `
+                                                            <span class="verified-badge-svg small">
+                                                                <svg aria-label="Verified" width="12" height="12" viewBox="0 0 40 40" fill="#0095F6" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path fill-rule="evenodd" d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Z"/>
+                                                                </svg>
+                                                            </span>
+                                                        ` : ''}
+                                                    </div>
+                                                    <p class="text-sm">${comment.content}</p>
+                                                    <p class="text-xs text-gray-400 mt-1">${moment(comment.createdAt).fromNow()}</p>
+                                                </div>
+                                                ${(comment.userId === currentUser?.uid || userRole === 'developer' || userRole === 'admin') ? `
+                                                    <button onclick="deleteComment('${comment.id}')" class="comment-delete text-red-400">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                ` : ''}
+                                            </div>
+                                        `).join('')}
+                                        
+                                        ${postComments.length > 3 ? `
+                                            <button onclick="toggleCommentModal('${post.id}')" class="text-xs text-blue-400 mt-1">
+                                                Lihat semua ${postComments.length} komentar
+                                            </button>
+                                        ` : ''}
                                     </div>
-                                    
-                                    <p class="mb-3">${feed.content}</p>
-                                    
-                                    ${feed.image ? `<img src="${feed.image}" class="post-image rounded-lg mb-3">` : ''}
-                                    
-                                    <div class="flex gap-4 text-gray-400">
-                                        <button class="hover:text-blue-400 transition" onclick="likeFeed('${feed.id}')">
-                                            <i class="fas fa-heart ${feed.likes?.includes(currentUser?.uid) ? 'text-red-500' : ''}"></i> ${feed.likes?.length || 0}
-                                        </button>
-                                        <button class="hover:text-blue-400 transition" onclick="commentOnFeed('${feed.id}', prompt('Tulis komentar:'))">
-                                            <i class="fas fa-comment"></i> ${feed.comments?.length || 0}
-                                        </button>
-                                        <button class="hover:text-blue-400 transition">
-                                            <i class="fas fa-share"></i> ${feed.shares || 0}
-                                        </button>
-                                    </div>
-                                </div>
-                            `).join('')}
+                                `;
+                            }).join('')}
                             
-                            ${feeds.length === 0 ? `
+                            ${recentPosts.length === 0 ? `
                                 <p class="text-gray-400 text-center py-8">Belum ada postingan. Jadilah yang pertama!</p>
                             ` : ''}
                         </div>
                         
-                        <button onclick="toggleFeedModal()" class="w-full mt-4 gradient-bg py-3 rounded-lg font-semibold">
+                        <button onclick="toggleAddPostModal()" class="w-full mt-4 gradient-bg py-3 rounded-lg font-semibold">
                             Buat Postingan Baru
                         </button>
                     </div>
                 </section>
+
+                <!-- Font Size Control -->
+                <div class="fixed bottom-20 right-4 z-50">
+                    <button onclick="toggleFontSizeModal()" class="bg-gradient-to-r from-purple-600 to-pink-600 w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition">
+                        <i class="fas fa-text-height"></i>
+                    </button>
+                </div>
 
                 <section class="py-10 sm:py-16 px-4">
                     <div class="max-w-6xl mx-auto">
@@ -3233,6 +3889,245 @@
                                     <h3 class="text-xl sm:text-2xl font-bold mt-6 mb-3">Total Badge</h3>
                                     <p class="text-4xl font-bold text-blue-400">${badges.length}</p>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderTeachersPage() {
+            return `
+                <section class="py-10 sm:py-16 px-4">
+                    <div class="max-w-6xl mx-auto">
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 sm:mb-12 roboto-font" data-aos="fade-up">
+                            <span class="neon-text">Pembina Ekskul</span>
+                        </h2>
+                        
+                        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                            ${teachers.length > 0 ? teachers.map((teacher, index) => `
+                                <div class="glass-card p-4 sm:p-5 hover-scale relative" data-aos="fade-up" data-aos-delay="${index * 50}">
+                                    ${(userRole === 'developer' || userRole === 'admin') ? `
+                                        <div class="absolute top-2 right-2 flex space-x-1">
+                                            <button onclick="editTeacher(${JSON.stringify(teacher).replace(/"/g, '&quot;')})" class="action-btn edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button onclick="deleteTeacher('${teacher.id}')" class="action-btn delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    ` : ''}
+                                    <img src="${teacher.photo}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto mb-3 border-3 border-blue-400"
+                                         onerror="this.src='https://ui-avatars.com/api/?name=${teacher.name}&background=00d4ff&color=fff'">
+                                    <h3 class="text-base sm:text-lg font-bold text-center">${teacher.name}</h3>
+                                    <p class="text-xs sm:text-sm text-blue-400 text-center mb-2">${teacher.role}</p>
+                                    <p class="text-xs sm:text-sm text-gray-300 text-center mb-3">${teacher.bio || ''}</p>
+                                    <div class="flex justify-center space-x-1 flex-wrap">
+                                        ${teacher.expertise ? teacher.expertise.map(skill => `
+                                            <span class="text-xs bg-white/10 px-2 py-1 rounded m-1">${skill}</span>
+                                        `).join('') : ''}
+                                    </div>
+                                </div>
+                            `).join('') : `
+                                <p class="text-gray-400 text-center col-span-3">Belum ada data pembina</p>
+                            `}
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderMembersPage() {
+            return `
+                <section class="py-10 sm:py-16 px-4">
+                    <div class="max-w-6xl mx-auto">
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 roboto-font" data-aos="fade-up">
+                            <span class="neon-text">Anggota Ekskul</span>
+                        </h2>
+                        
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+                            ${members.length > 0 ? members.map((member, index) => {
+                                const userAttendance = attendanceHistory.filter(a => a.userId === member.id).length;
+                                const level = calculateLevel(userAttendance);
+                                const userBadgeList = userBadges[member.id]?.badges || [];
+                                const isDeveloper = member.role === 'developer';
+                                const isAdmin = member.role === 'admin';
+                                const isFollowing = currentUser && userFollowing[currentUser.uid]?.includes(member.id);
+                                
+                                return `
+                                    <div class="glass-card p-3 sm:p-4 hover-scale relative cursor-pointer" data-aos="fade-up" data-aos-delay="${index * 30}" onclick="viewMemberProfile('${member.id}')">
+                                        ${(userRole === 'developer' || userRole === 'admin') ? `
+                                            <div class="absolute top-2 right-2 flex space-x-1" onclick="event.stopPropagation()">
+                                                <button onclick="deleteMember('${member.id}')" class="action-btn delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        ` : ''}
+                                        <div class="relative">
+                                            <img src="${member.photo}" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-2 border-2 border-blue-400"
+                                                 onerror="this.src='https://ui-avatars.com/api/?name=${member.name}&background=00d4ff&color=fff'">
+                                            ${member.verified ? `
+                                                <span class="verified-badge-svg absolute top-0 right-0">
+                                                    <svg aria-label="Verified" width="18" height="18" viewBox="0 0 40 40" fill="#0095F6" xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd" d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Z"/>
+                                                    </svg>
+                                                </span>
+                                            ` : ''}
+                                        </div>
+                                        <h3 class="font-bold text-center text-sm sm:text-base">${member.name}</h3>
+                                        <p class="text-xs text-blue-400 text-center">${member.class || '-'}</p>
+                                        <p class="text-xs text-gray-400 text-center mb-2">
+                                            ${isDeveloper ? '👨‍💻 Developer' : (isAdmin ? '👑 Admin' : (member.role || '👤 Anggota'))}
+                                        </p>
+                                        
+                                        <div class="text-center mt-1">
+                                            <span class="level-badge">${level.icon} Level ${level.level} • ${level.title}</span>
+                                        </div>
+                                        
+                                        <p class="text-xs text-center text-blue-300 mt-1">
+                                            <i class="fas fa-calendar-check mr-1"></i>${userAttendance} kehadiran
+                                        </p>
+                                        <p class="text-xs text-center text-yellow-400 mt-1">
+                                            ⭐ ${userPoints[member.id] || 0} points
+                                        </p>
+                                        
+                                        ${userBadgeList.length > 0 ? `
+                                            <div class="flex justify-center space-x-1 mt-2">
+                                                ${userBadgeList.slice(0, 3).map(badgeId => {
+                                                    const badge = badges.find(b => b.id === badgeId);
+                                                    return badge ? `<span title="${badge.name}" class="text-sm" style="filter: drop-shadow(0 0 5px ${badge.color});">${badge.icon}</span>` : '';
+                                                }).join('')}
+                                                ${userBadgeList.length > 3 ? '<span class="text-xs text-gray-400">+'+ (userBadgeList.length-3) +'</span>' : ''}
+                                            </div>
+                                        ` : ''}
+                                        
+                                        ${userEquippedBadge[member.id] ? `
+                                            <div class="absolute top-2 left-2">
+                                                <span class="text-xs bg-gradient-to-r from-yellow-600 to-orange-600 px-2 py-1 rounded-full">★</span>
+                                            </div>
+                                        ` : ''}
+                                        
+                                        ${currentUser && currentUser.uid !== member.id ? `
+                                            <button onclick="event.stopPropagation(); toggleFollow('${member.id}')" class="mt-2 w-full text-xs ${isFollowing ? 'bg-red-600' : 'bg-blue-600'} py-1 rounded-full">
+                                                ${isFollowing ? 'Unfollow' : 'Follow'}
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                `;
+                            }).join('') : `
+                                <p class="text-gray-400 text-center col-span-4">Belum ada anggota</p>
+                            `}
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderProjectsPage() {
+            return `
+                <section class="py-10 sm:py-16 px-4">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="flex justify-between items-center mb-8">
+                            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold roboto-font" data-aos="fade-up">
+                                <span class="neon-text">Proyek Robotik</span>
+                            </h2>
+                            ${(userRole === 'developer' || userRole === 'admin') ? `
+                                <button onclick="showAddProjectModal = true; renderMainContent()" 
+                                    class="gradient-bg px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base">
+                                    <i class="fas fa-plus mr-1"></i>Tambah Proyek
+                                </button>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                            ${projects.length > 0 ? projects.map((project, index) => `
+                                <div class="glass-card overflow-hidden hover-scale relative" data-aos="fade-up" data-aos-delay="${index * 50}">
+                                    ${(userRole === 'developer' || userRole === 'admin') ? `
+                                        <div class="absolute top-2 right-2 flex space-x-1 z-10">
+                                            <button onclick="editProject(${JSON.stringify(project).replace(/"/g, '&quot;')})" class="action-btn edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button onclick="deleteProject('${project.id}')" class="action-btn delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    ` : ''}
+                                    <img src="${project.image || 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e'}" class="w-full h-36 sm:h-40 object-cover">
+                                    <div class="p-3 sm:p-4">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h3 class="text-sm sm:text-base font-bold">${project.name}</h3>
+                                            <span class="text-xs ${project.status === 'Selesai' ? 'bg-green-600' : 'bg-yellow-600'} px-2 py-1 rounded">
+                                                ${project.status || 'Development'}
+                                            </span>
+                                        </div>
+                                        <p class="text-xs text-gray-400 mb-2">Tim: ${project.team || '-'}</p>
+                                        <p class="text-xs sm:text-sm mb-2">${project.description || ''}</p>
+                                        <p class="text-xs text-gray-400"><i class="fas fa-users mr-1"></i>${project.members || 0} anggota</p>
+                                    </div>
+                                </div>
+                            `).join('') : `
+                                <p class="text-gray-400 text-center col-span-3 py-10">
+                                    Belum ada proyek. 
+                                    ${(userRole === 'developer' || userRole === 'admin') ? 
+                                        'Klik tombol Tambah Proyek untuk memulai.' : 
+                                        'Hubungi admin untuk menambahkan proyek.'}
+                                </p>
+                            `}
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderSchedulePage() {
+            return `
+                <section class="py-10 sm:py-16 px-4">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="flex justify-between items-center mb-8">
+                            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold roboto-font" data-aos="fade-up">
+                                <span class="neon-text">Jadwal Ekskul</span>
+                            </h2>
+                            ${(userRole === 'developer' || userRole === 'admin') ? `
+                                <button onclick="showAddScheduleModal = true; renderMainContent()" 
+                                    class="gradient-bg px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base">
+                                    <i class="fas fa-plus mr-1"></i>Tambah Jadwal
+                                </button>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="glass-card p-4 sm:p-6" data-aos="fade-up">
+                            <div class="space-y-3">
+                                ${schedules.length > 0 ? schedules.map(s => `
+                                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg hover-scale">
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-3">
+                                                <span class="font-bold text-blue-400 w-16">${s.day}</span>
+                                                <span class="text-sm">${s.time}</span>
+                                            </div>
+                                            <div class="text-sm mt-1">
+                                                <p class="font-semibold">${s.activity}</p>
+                                                <p class="text-xs text-gray-400">Oleh: ${s.instructor}</p>
+                                            </div>
+                                        </div>
+                                        ${(userRole === 'developer' || userRole === 'admin') ? `
+                                            <div class="flex space-x-1">
+                                                <button onclick="editSchedule(${JSON.stringify(s).replace(/"/g, '&quot;')})" class="action-btn edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button onclick="deleteSchedule('${s.id}')" class="action-btn delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `).join('') : `
+                                    <p class="text-gray-400 text-center py-4">
+                                        Belum ada jadwal. 
+                                        ${(userRole === 'developer' || userRole === 'admin') ? 
+                                            'Klik tombol Tambah Jadwal untuk menambahkan.' : 
+                                            'Hubungi admin untuk menambahkan jadwal.'}
+                                    </p>
+                                `}
                             </div>
                         </div>
                     </div>
@@ -3413,6 +4308,30 @@
                                             <button onclick="devAddTitle(document.getElementById('dev-badge-user').value, document.getElementById('dev-title').value)" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 p-3 rounded-lg font-semibold">
                                                 Tambah Title
                                             </button>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold mb-2 text-blue-400">Set Verified Badge (SVG)</h4>
+                                            <select id="dev-verified-user" class="w-full mb-2 p-2 rounded text-sm">
+                                                <option value="">Pilih user</option>
+                                                ${members.map(m => `
+                                                    <option value="${m.id}">
+                                                        ${m.name} ${m.verified ? '✅ Verified' : ''}
+                                                    </option>
+                                                `).join('')}
+                                            </select>
+                                            <div class="flex gap-2">
+                                                <button onclick="setVerified(document.getElementById('dev-verified-user').value)" 
+                                                        class="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 p-3 rounded-lg font-semibold flex items-center justify-center gap-2">
+                                                    <svg width="18" height="18" viewBox="0 0 40 40" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd" d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Z"/>
+                                                    </svg>
+                                                    Verified
+                                                </button>
+                                                <button onclick="removeVerified(document.getElementById('dev-verified-user').value)" 
+                                                        class="flex-1 bg-red-600 p-3 rounded-lg font-semibold">
+                                                    <i class="fas fa-times-circle mr-2"></i>Remove
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -3674,42 +4593,28 @@
                             </div>
                             
                             ${currentUser ? `
-                                ${availableMembers.length > 0 ? `
-                                    <div class="space-y-4">
-                                        <p class="text-sm text-gray-300">Pilih nama untuk absen (+10 points):</p>
-                                        
-                                        <select id="attendance-member-select" class="w-full p-3 rounded-lg text-sm">
-                                            <option value="">-- Pilih Anggota --</option>
-                                            ${availableMembers.map(m => {
-                                                const level = calculateLevel(attendanceHistory.filter(a => a.userId === m.id).length);
-                                                return `
-                                                    <option value="${m.id}" data-name="${m.name}" data-class="${m.class || ''}" data-photo="${m.photo}">
-                                                        ${m.name} - ${m.class || 'Kelas belum diisi'} (${level.icon} Level ${level.level})
-                                                    </option>
-                                                `;
-                                            }).join('')}
-                                        </select>
-                                        
-                                        <div class="text-center text-xs text-gray-400">- atau -</div>
-                                        
-                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                            <input type="text" id="attendance-manual-name" placeholder="Nama (jika tidak ada di daftar)" class="w-full p-3 rounded-lg text-sm">
-                                            <input type="text" id="attendance-manual-class" placeholder="Kelas" class="w-full p-3 rounded-lg text-sm">
-                                        </div>
-                                        
-                                        <button onclick="submitAttendance()" class="w-full gradient-bg p-3 sm:p-4 rounded-lg font-semibold hover:scale-105 transition text-sm sm:text-base">
-                                            <i class="fas fa-check-circle mr-2"></i>Konfirmasi Kehadiran (+10⭐)
-                                        </button>
-                                    </div>
-                                ` : `
-                                    <div class="text-center p-3 sm:p-4 bg-green-600/20 rounded-lg">
-                                        <i class="fas fa-check-circle text-green-400 text-xl sm:text-2xl mb-2"></i>
-                                        <p class="text-green-400 text-sm sm:text-base">Semua anggota sudah absen hari ini!</p>
-                                    </div>
-                                `}
+                                <div class="space-y-4">
+                                    <button onclick="scanQR()" class="w-full gradient-bg p-3 sm:p-4 rounded-lg font-semibold hover:scale-105 transition text-sm sm:text-base">
+                                        <i class="fas fa-qrcode mr-2"></i>Scan QR untuk Absen
+                                    </button>
+                                    <p class="text-center text-xs text-gray-400">- atau -</p>
+                                    <select id="attendance-member-select" class="w-full p-3 rounded-lg text-sm">
+                                        <option value="">-- Pilih Anggota untuk Absen Manual --</option>
+                                        ${availableMembers.map(m => {
+                                            const level = calculateLevel(attendanceHistory.filter(a => a.userId === m.id).length);
+                                            return `
+                                                <option value="${m.id}" data-name="${m.name}" data-class="${m.class || ''}" data-photo="${m.photo}">
+                                                    ${m.name} - ${m.class || 'Kelas belum diisi'} (${level.icon} Level ${level.level})
+                                                </option>
+                                            `;
+                                        }).join('')}
+                                    </select>
+                                    <button onclick="submitAttendance()" class="w-full gradient-bg p-3 sm:p-4 rounded-lg font-semibold hover:scale-105 transition text-sm sm:text-base">
+                                        <i class="fas fa-check-circle mr-2"></i>Konfirmasi Kehadiran (+10⭐)
+                                    </button>
+                                </div>
                             ` : `
                                 <div class="text-center p-4 sm:p-6 bg-yellow-600/20 rounded-lg">
-                                    <i class="fas fa-lock text-yellow-400 text-3xl mb-3"></i>
                                     <p class="text-yellow-400 text-base sm:text-lg mb-3">Silakan login untuk absensi</p>
                                     <button onclick="toggleLoginModal()" class="bg-yellow-600 hover:bg-yellow-700 px-6 py-3 rounded-lg text-sm sm:text-base font-semibold">
                                         <i class="fas fa-sign-in-alt mr-2"></i>Login Sekarang
@@ -3788,238 +4693,6 @@
             `;
         }
 
-        function renderMembersPage() {
-            return `
-                <section class="py-10 sm:py-16 px-4">
-                    <div class="max-w-6xl mx-auto">
-                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 roboto-font" data-aos="fade-up">
-                            <span class="neon-text">Anggota Ekskul</span>
-                        </h2>
-                        
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
-                            ${members.length > 0 ? members.map((member, index) => {
-                                const userAttendance = attendanceHistory.filter(a => a.userId === member.id).length;
-                                const level = calculateLevel(userAttendance);
-                                const userBadgeList = userBadges[member.id]?.badges || [];
-                                const isDeveloper = member.role === 'developer';
-                                const isAdmin = member.role === 'admin';
-                                const isFollowing = currentUser && userFollowing[currentUser.uid]?.includes(member.id);
-                                
-                                return `
-                                    <div class="glass-card p-3 sm:p-4 hover-scale relative cursor-pointer" data-aos="fade-up" data-aos-delay="${index * 30}" onclick="viewMemberProfile('${member.id}')">
-                                        ${(userRole === 'developer' || userRole === 'admin') ? `
-                                            <div class="absolute top-2 right-2 flex space-x-1" onclick="event.stopPropagation()">
-                                                <button onclick="deleteMember('${member.id}')" class="action-btn delete">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        ` : ''}
-                                        <div class="relative">
-                                            <img src="${member.photo}" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-2 border-2 border-blue-400"
-                                                 onerror="this.src='https://ui-avatars.com/api/?name=${member.name}&background=00d4ff&color=fff'">
-                                        </div>
-                                        <h3 class="font-bold text-center text-sm sm:text-base">${member.name}</h3>
-                                        <p class="text-xs text-blue-400 text-center">${member.class || '-'}</p>
-                                        <p class="text-xs text-gray-400 text-center mb-2">
-                                            ${isDeveloper ? '👨‍💻 Developer' : (isAdmin ? '👑 Admin' : (member.role || '👤 Anggota'))}
-                                        </p>
-                                        
-                                        <div class="text-center mt-1">
-                                            <span class="level-badge">${level.icon} Level ${level.level} • ${level.title}</span>
-                                        </div>
-                                        
-                                        <p class="text-xs text-center text-blue-300 mt-1">
-                                            <i class="fas fa-calendar-check mr-1"></i>${userAttendance} kehadiran
-                                        </p>
-                                        <p class="text-xs text-center text-yellow-400 mt-1">
-                                            ⭐ ${userPoints[member.id] || 0} points
-                                        </p>
-                                        
-                                        ${userBadgeList.length > 0 ? `
-                                            <div class="flex justify-center space-x-1 mt-2">
-                                                ${userBadgeList.slice(0, 3).map(badgeId => {
-                                                    const badge = badges.find(b => b.id === badgeId);
-                                                    return badge ? `<span title="${badge.name}" class="text-sm" style="filter: drop-shadow(0 0 5px ${badge.color});">${badge.icon}</span>` : '';
-                                                }).join('')}
-                                                ${userBadgeList.length > 3 ? '<span class="text-xs text-gray-400">+'+ (userBadgeList.length-3) +'</span>' : ''}
-                                            </div>
-                                        ` : ''}
-                                        
-                                        ${userEquippedBadge[member.id] ? `
-                                            <div class="absolute top-2 left-2">
-                                                <span class="text-xs bg-gradient-to-r from-yellow-600 to-orange-600 px-2 py-1 rounded-full">★</span>
-                                            </div>
-                                        ` : ''}
-                                        
-                                        ${currentUser && currentUser.uid !== member.id ? `
-                                            <button onclick="event.stopPropagation(); followUser('${member.id}')" class="mt-2 w-full text-xs ${isFollowing ? 'bg-red-600' : 'bg-blue-600'} py-1 rounded-full">
-                                                ${isFollowing ? 'Unfollow' : 'Follow'}
-                                            </button>
-                                        ` : ''}
-                                    </div>
-                                `;
-                            }).join('') : `
-                                <p class="text-gray-400 text-center col-span-4">Belum ada anggota</p>
-                            `}
-                        </div>
-                    </div>
-                </section>
-            `;
-        }
-
-        function renderProjectsPage() {
-            return `
-                <section class="py-10 sm:py-16 px-4">
-                    <div class="max-w-6xl mx-auto">
-                        <div class="flex justify-between items-center mb-8">
-                            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold roboto-font" data-aos="fade-up">
-                                <span class="neon-text">Proyek Robotik</span>
-                            </h2>
-                            ${(userRole === 'developer' || userRole === 'admin') ? `
-                                <button onclick="showAddProjectModal = true; renderMainContent()" 
-                                    class="gradient-bg px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base">
-                                    <i class="fas fa-plus mr-1"></i>Tambah Proyek
-                                </button>
-                            ` : ''}
-                        </div>
-                        
-                        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-                            ${projects.length > 0 ? projects.map((project, index) => `
-                                <div class="glass-card overflow-hidden hover-scale relative" data-aos="fade-up" data-aos-delay="${index * 50}">
-                                    ${(userRole === 'developer' || userRole === 'admin') ? `
-                                        <div class="absolute top-2 right-2 flex space-x-1 z-10">
-                                            <button onclick="editProject(${JSON.stringify(project).replace(/"/g, '&quot;')})" class="action-btn edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button onclick="deleteProject('${project.id}')" class="action-btn delete">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    ` : ''}
-                                    <img src="${project.image || 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e'}" class="w-full h-36 sm:h-40 object-cover">
-                                    <div class="p-3 sm:p-4">
-                                        <div class="flex justify-between items-start mb-2">
-                                            <h3 class="text-sm sm:text-base font-bold">${project.name}</h3>
-                                            <span class="text-xs ${project.status === 'Selesai' ? 'bg-green-600' : 'bg-yellow-600'} px-2 py-1 rounded">
-                                                ${project.status || 'Development'}
-                                            </span>
-                                        </div>
-                                        <p class="text-xs text-gray-400 mb-2">Tim: ${project.team || '-'}</p>
-                                        <p class="text-xs sm:text-sm mb-2">${project.description || ''}</p>
-                                        <p class="text-xs text-gray-400"><i class="fas fa-users mr-1"></i>${project.members || 0} anggota</p>
-                                    </div>
-                                </div>
-                            `).join('') : `
-                                <p class="text-gray-400 text-center col-span-3 py-10">
-                                    Belum ada proyek. 
-                                    ${(userRole === 'developer' || userRole === 'admin') ? 
-                                        'Klik tombol Tambah Proyek untuk memulai.' : 
-                                        'Hubungi admin untuk menambahkan proyek.'}
-                                </p>
-                            `}
-                        </div>
-                    </div>
-                </section>
-            `;
-        }
-
-        function renderSchedulePage() {
-            return `
-                <section class="py-10 sm:py-16 px-4">
-                    <div class="max-w-4xl mx-auto">
-                        <div class="flex justify-between items-center mb-8">
-                            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold roboto-font" data-aos="fade-up">
-                                <span class="neon-text">Jadwal Ekskul</span>
-                            </h2>
-                            ${(userRole === 'developer' || userRole === 'admin') ? `
-                                <button onclick="showAddScheduleModal = true; renderMainContent()" 
-                                    class="gradient-bg px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base">
-                                    <i class="fas fa-plus mr-1"></i>Tambah Jadwal
-                                </button>
-                            ` : ''}
-                        </div>
-                        
-                        <div class="glass-card p-4 sm:p-6" data-aos="fade-up">
-                            <div class="space-y-3">
-                                ${schedules.length > 0 ? schedules.map(s => `
-                                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg hover-scale">
-                                        <div class="flex-1">
-                                            <div class="flex items-center space-x-3">
-                                                <span class="font-bold text-blue-400 w-16">${s.day}</span>
-                                                <span class="text-sm">${s.time}</span>
-                                            </div>
-                                            <div class="text-sm mt-1">
-                                                <p class="font-semibold">${s.activity}</p>
-                                                <p class="text-xs text-gray-400">Oleh: ${s.instructor}</p>
-                                            </div>
-                                        </div>
-                                        ${(userRole === 'developer' || userRole === 'admin') ? `
-                                            <div class="flex space-x-1">
-                                                <button onclick="editSchedule(${JSON.stringify(s).replace(/"/g, '&quot;')})" class="action-btn edit">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button onclick="deleteSchedule('${s.id}')" class="action-btn delete">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        ` : ''}
-                                    </div>
-                                `).join('') : `
-                                    <p class="text-gray-400 text-center py-4">
-                                        Belum ada jadwal. 
-                                        ${(userRole === 'developer' || userRole === 'admin') ? 
-                                            'Klik tombol Tambah Jadwal untuk menambahkan.' : 
-                                            'Hubungi admin untuk menambahkan jadwal.'}
-                                    </p>
-                                `}
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            `;
-        }
-
-        function renderTeachersPage() {
-            return `
-                <section class="py-10 sm:py-16 px-4">
-                    <div class="max-w-6xl mx-auto">
-                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 sm:mb-12 roboto-font" data-aos="fade-up">
-                            <span class="neon-text">Pembina Ekskul</span>
-                        </h2>
-                        
-                        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-                            ${teachers.length > 0 ? teachers.map((teacher, index) => `
-                                <div class="glass-card p-4 sm:p-5 hover-scale relative" data-aos="fade-up" data-aos-delay="${index * 50}">
-                                    ${(userRole === 'developer' || userRole === 'admin') ? `
-                                        <div class="absolute top-2 right-2 flex space-x-1">
-                                            <button onclick="editTeacher(${JSON.stringify(teacher).replace(/"/g, '&quot;')})" class="action-btn edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button onclick="deleteTeacher('${teacher.id}')" class="action-btn delete">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    ` : ''}
-                                    <img src="${teacher.photo}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto mb-3 border-3 border-blue-400"
-                                         onerror="this.src='https://ui-avatars.com/api/?name=${teacher.name}&background=00d4ff&color=fff'">
-                                    <h3 class="text-base sm:text-lg font-bold text-center">${teacher.name}</h3>
-                                    <p class="text-xs sm:text-sm text-blue-400 text-center mb-2">${teacher.role}</p>
-                                    <p class="text-xs sm:text-sm text-gray-300 text-center mb-3">${teacher.bio || ''}</p>
-                                    <div class="flex justify-center space-x-1 flex-wrap">
-                                        ${teacher.expertise ? teacher.expertise.map(skill => `
-                                            <span class="text-xs bg-white/10 px-2 py-1 rounded m-1">${skill}</span>
-                                        `).join('') : ''}
-                                    </div>
-                                </div>
-                            `).join('') : `
-                                <p class="text-gray-400 text-center col-span-3">Belum ada data pembina</p>
-                            `}
-                        </div>
-                    </div>
-                </section>
-            `;
-        }
-
         function renderLeaderboardPage() {
             calculateLeaderboard();
             
@@ -4090,16 +4763,38 @@
                         <div class="chat-container mb-4" id="chat-modal-container">
                             ${chats.slice(-50).map(chat => `
                                 <div class="chat-message ${chat.userId === currentUser?.uid ? 'own' : ''}">
-                                    <div class="chat-bubble">
+                                    <div class="chat-bubble ${chat.userRole === 'developer' ? 'dev-chat-bubble' : chat.userRole === 'admin' ? 'admin-chat-bubble' : ''}">
                                         <div class="flex items-center space-x-2 mb-1">
                                             <img src="${chat.userPhoto}" class="w-5 h-5 rounded-full">
-                                            <span class="text-xs font-semibold">${chat.userName}</span>
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-xs font-semibold">${chat.userName}</span>
+                                                ${chat.userVerified ? `
+                                                    <span class="verified-badge-svg small">
+                                                        <svg aria-label="Verified" width="12" height="12" viewBox="0 0 40 40" fill="#0095F6" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Z"/>
+                                                        </svg>
+                                                    </span>
+                                                ` : ''}
+                                            </div>
                                         </div>
                                         <p class="text-sm">${chat.message}</p>
                                         <p class="chat-time">${chat.createdAt ? moment(chat.createdAt.toDate()).fromNow() : 'Baru saja'}</p>
                                     </div>
                                 </div>
                             `).join('')}
+                        </div>
+                        
+                        <div class="flex gap-2 mb-3">
+                            <button onclick="showEmojiPicker()" class="bg-gray-600 px-4 py-2 rounded-lg">
+                                😊
+                            </button>
+                            <div id="emoji-picker-container" style="display: none;" class="emoji-picker">
+                                ${emojiList2022.slice(0, 32).map(e => `
+                                    <button onclick="document.getElementById('chat-modal-input').value += '${e.emoji}'" class="reaction-emoji p-2 hover:bg-white/10 rounded">
+                                        ${e.emoji}
+                                    </button>
+                                `).join('')}
+                            </div>
                         </div>
                         
                         <form class="flex gap-2" onsubmit="event.preventDefault(); sendChat(document.getElementById('chat-modal-input').value); document.getElementById('chat-modal-input').value = ''">
@@ -4165,19 +4860,16 @@
         function renderQRModal() {
             return `
                 <div class="modal" onclick="if(event.target === this) toggleQRModal()">
-                    <div class="modal-content text-center" onclick="event.stopPropagation()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl sm:text-2xl font-bold">📱 QR Code Saya</h3>
+                            <h3 class="text-xl font-bold">📱 QR Code Scanner</h3>
                             <button onclick="toggleQRModal()" class="text-2xl hover:text-gray-400">&times;</button>
                         </div>
                         
-                        <canvas id="qr-code-container" class="qr-code"></canvas>
+                        <div id="qr-scanner-container" style="width: 100%; height: 300px;"></div>
                         
-                        <p class="text-sm text-gray-400 mt-4">Scan untuk melihat profil</p>
-                        <p class="text-xs text-gray-500 mt-2">${currentUser?.displayName || userData?.name}</p>
-                        
-                        <button onclick="downloadQRCode()" class="w-full mt-4 gradient-bg p-3 rounded-lg font-semibold">
-                            Download QR Code
+                        <button onclick="toggleQRModal()" class="w-full mt-4 bg-gray-600 py-3 rounded-lg font-semibold">
+                            Tutup
                         </button>
                     </div>
                 </div>
@@ -4197,7 +4889,16 @@
                         
                         <div class="text-center">
                             <img src="${selectedStory.image}" class="w-full rounded-lg mb-4">
-                            <p class="font-semibold">${selectedStory.userName}</p>
+                            <div class="flex items-center justify-center gap-2 mb-2">
+                                <p class="font-semibold">${selectedStory.userName}</p>
+                                ${selectedStory.userVerified ? `
+                                    <span class="verified-badge-svg small">
+                                        <svg aria-label="Verified" width="14" height="14" viewBox="0 0 40 40" fill="#0095F6" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Z"/>
+                                        </svg>
+                                    </span>
+                                ` : ''}
+                            </div>
                             <p class="text-xs text-gray-400">${selectedStory.createdAt ? moment(selectedStory.createdAt.toDate()).fromNow() : 'Baru saja'}</p>
                             <p class="text-xs text-gray-500 mt-2">Dilihat ${selectedStory.views?.length || 0} kali</p>
                         </div>
@@ -4219,33 +4920,276 @@
                             <button onclick="toggleFeedModal()" class="text-2xl hover:text-gray-400">&times;</button>
                         </div>
                         
-                        <form onsubmit="event.preventDefault(); createFeed({ content: document.getElementById('feed-content').value, image: document.getElementById('feed-image').value }); toggleFeedModal();">
+                        <form onsubmit="event.preventDefault(); createPost(document.getElementById('post-content').value, document.getElementById('post-image').value); toggleFeedModal();">
                             <div class="mb-3">
-                                <textarea id="feed-content" rows="4" placeholder="Apa yang Anda pikirkan?" class="w-full p-3 rounded-lg text-sm" required></textarea>
+                                <textarea id="post-content" rows="4" placeholder="Apa yang Anda pikirkan?" class="w-full p-3 rounded-lg text-sm" required></textarea>
                             </div>
                             
                             <div class="mb-4">
                                 <label class="block text-xs sm:text-sm mb-1">Foto (Opsional)</label>
                                 
                                 <div class="photo-preview-container mb-2">
-                                    <img id="feed-preview" class="photo-preview" style="display: none;">
-                                    <div class="photo-preview-placeholder" id="feed-placeholder">
+                                    <img id="post-preview" class="photo-preview" style="display: none;">
+                                    <div class="photo-preview-placeholder" id="post-placeholder">
                                         <i class="fas fa-cloud-upload-alt"></i>
                                         <p>Klik tombol upload untuk memilih foto</p>
                                     </div>
                                 </div>
                                 
-                                <button type="button" onclick="uploadFeedPhoto()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 p-3 rounded-lg text-sm mb-2">
+                                <button type="button" onclick="uploadPostPhoto()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 p-3 rounded-lg text-sm mb-2">
                                     <i class="fas fa-cloud-upload-alt mr-2"></i>Upload Foto
                                 </button>
                                 
-                                <input type="hidden" id="feed-image">
+                                <input type="hidden" id="post-image">
                             </div>
                             
                             <button type="submit" class="w-full gradient-bg p-3 rounded-lg font-semibold text-sm sm:text-base">
                                 Posting
                             </button>
                         </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAddPostModal() {
+            return renderFeedModal(); // Same as feed modal
+        }
+
+        function renderCommentModal() {
+            const post = selectedPost;
+            if (!post) return '';
+            
+            const postComments = comments.filter(c => c.postId === post.id);
+            
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleCommentModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold">Komentar</h3>
+                            <button onclick="toggleCommentModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <div class="max-h-96 overflow-y-auto space-y-3 mb-4">
+                            ${postComments.length > 0 ? postComments.map(comment => `
+                                <div class="flex items-start gap-2 bg-white/5 p-2 rounded-lg">
+                                    <img src="${comment.userPhoto}" class="w-8 h-8 rounded-full">
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-sm font-semibold">${comment.userName}</span>
+                                            ${comment.userVerified ? `
+                                                <span class="verified-badge-svg small">
+                                                    <svg aria-label="Verified" width="12" height="12" viewBox="0 0 40 40" fill="#0095F6" xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd" d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Z"/>
+                                                    </svg>
+                                                </span>
+                                            ` : ''}
+                                        </div>
+                                        <p class="text-sm">${comment.content}</p>
+                                        <p class="text-xs text-gray-400 mt-1">${moment(comment.createdAt).fromNow()}</p>
+                                    </div>
+                                    ${(comment.userId === currentUser?.uid || userRole === 'developer' || userRole === 'admin') ? `
+                                        <button onclick="deleteComment('${comment.id}')" class="text-red-400">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            `).join('') : `
+                                <p class="text-gray-400 text-center py-4">Belum ada komentar</p>
+                            `}
+                        </div>
+                        
+                        <form onsubmit="event.preventDefault(); addComment('${post.id}', document.getElementById('comment-input').value); document.getElementById('comment-input').value = '';">
+                            <div class="flex gap-2">
+                                <input type="text" id="comment-input" placeholder="Tulis komentar..." class="flex-1 p-3 rounded-lg text-sm">
+                                <button type="submit" class="gradient-bg px-6 py-3 rounded-lg">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderReactionModal() {
+            const postId = selectedPost?.id;
+            if (!postId) return '';
+            
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleReactionModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold">Pilih Reaksi (15.4 Emoji 2022)</h3>
+                            <button onclick="toggleReactionModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <div class="emoji-picker">
+                            ${emojiList2022.slice(0, 64).map(e => `
+                                <button onclick="addReaction('${postId}', '${e.emoji}')" class="reaction-emoji p-2 hover:bg-white/10 rounded">
+                                    ${e.emoji}
+                                </button>
+                            `).join('')}
+                        </div>
+                        
+                        <p class="text-xs text-gray-400 text-center mt-4">Emoji 15.4 (2022) - ${emojiList2022.length} emoji</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFontSizeModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleFontSizeModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold">Atur Ukuran Font</h3>
+                            <button onclick="toggleFontSizeModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <input type="range" min="12" max="24" value="${userFontSize}" class="font-size-control" oninput="document.getElementById('font-size-preview').style.fontSize = this.value + 'px'; userFontSize = this.value">
+                            
+                            <div class="text-center">
+                                <p class="text-sm text-gray-400">Preview:</p>
+                                <p id="font-size-preview" style="font-size: ${userFontSize}px">Contoh teks dengan ukuran font</p>
+                            </div>
+                            
+                            <button onclick="setFontSize(userFontSize); toggleFontSizeModal()" class="w-full gradient-bg py-3 rounded-lg font-semibold">
+                                Simpan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCropModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleCropModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 800px;">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold">Crop Foto</h3>
+                            <button onclick="toggleCropModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <div id="crop-container" class="crop-container">
+                            <img id="crop-image" src="" class="crop-image">
+                        </div>
+                        
+                        <div class="flex gap-3 mt-4">
+                            <button onclick="cropAndSave()" class="flex-1 gradient-bg py-3 rounded-lg font-semibold">
+                                Crop & Simpan
+                            </button>
+                            <button onclick="toggleCropModal()" class="flex-1 bg-gray-600 py-3 rounded-lg font-semibold">
+                                Batal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderGroupLinkModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleGroupLinkModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold">📢 Link Grup Komunitas</h3>
+                            <button onclick="toggleGroupLinkModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-sm font-semibold mb-2">Grup WhatsApp</p>
+                                <div class="flex gap-2">
+                                    <input type="text" value="https://chat.whatsapp.com/example" class="flex-1 p-2 rounded-lg text-sm" readonly>
+                                    <button onclick="copyToClipboard('https://chat.whatsapp.com/example')" class="bg-blue-600 px-4 py-2 rounded-lg">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <p class="text-sm font-semibold mb-2">Grup Telegram</p>
+                                <div class="flex gap-2">
+                                    <input type="text" value="https://t.me/ekskul_robotik" class="flex-1 p-2 rounded-lg text-sm" readonly>
+                                    <button onclick="copyToClipboard('https://t.me/ekskul_robotik')" class="bg-blue-600 px-4 py-2 rounded-lg">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <p class="text-sm font-semibold mb-2">Discord Server</p>
+                                <div class="flex gap-2">
+                                    <input type="text" value="https://discord.gg/example" class="flex-1 p-2 rounded-lg text-sm" readonly>
+                                    <button onclick="copyToClipboard('https://discord.gg/example')" class="bg-blue-600 px-4 py-2 rounded-lg">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button onclick="toggleGroupLinkModal()" class="w-full mt-4 bg-gray-600 py-3 rounded-lg font-semibold">
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFollowersModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) toggleFollowersModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold">👥 Tambah Followers</h3>
+                            <button onclick="toggleFollowersModal()" class="text-2xl hover:text-gray-400">&times;</button>
+                        </div>
+                        
+                        <form onsubmit="event.preventDefault(); addFollowers(document.getElementById('followers-user').value, document.getElementById('followers-count').value);">
+                            <div class="mb-3">
+                                <label class="block text-sm mb-1">Pilih User</label>
+                                <select id="followers-user" class="w-full p-3 rounded-lg text-sm" required>
+                                    <option value="">-- Pilih User --</option>
+                                    ${members.map(m => `
+                                        <option value="${m.id}">${m.name} (Followers: ${userFollowers[m.id]?.length || 0})</option>
+                                    `).join('')}
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="block text-sm mb-1">Jumlah Followers</label>
+                                <input type="number" id="followers-count" min="1" max="10000" class="w-full p-3 rounded-lg text-sm" required>
+                            </div>
+                            
+                            <button type="submit" class="w-full gradient-bg py-3 rounded-lg font-semibold">
+                                Tambah Followers
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderNotificationsPermissionModal() {
+            return `
+                <div class="modal" onclick="if(event.target === this) showNotificationsPermissionModal = false; renderMainContent()">
+                    <div class="modal-content text-center" onclick="event.stopPropagation()">
+                        <i class="fas fa-bell text-5xl text-blue-400 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Izinkan Notifikasi?</h3>
+                        <p class="text-sm text-gray-400 mb-4">
+                            Dapatkan pemberitahuan tentang aktivitas penting seperti komentar, like, dan mention.
+                        </p>
+                        <div class="flex gap-3">
+                            <button onclick="requestNotificationPermission()" class="flex-1 gradient-bg py-3 rounded-lg font-semibold">
+                                Izinkan
+                            </button>
+                            <button onclick="showNotificationsPermissionModal = false; renderMainContent()" class="flex-1 bg-gray-600 py-3 rounded-lg font-semibold">
+                                Nanti
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -4455,6 +5399,17 @@
                                     `).join('')}
                                 </div>
                             ` : ''}
+                            
+                            ${userVerified[profileData?.id] ? `
+                                <div class="mt-2">
+                                    <span class="verified-badge-svg">
+                                        <svg aria-label="Verified" width="18" height="18" viewBox="0 0 40 40" fill="#0095F6" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Z"/>
+                                        </svg>
+                                    </span>
+                                    <span class="text-sm text-blue-400">Verified Account</span>
+                                </div>
+                            ` : ''}
                         </div>
                         
                         ${isViewingOther ? `
@@ -4508,7 +5463,7 @@
                             </div>
                             
                             ${currentUser && currentUser.uid !== profileData?.id ? `
-                                <button onclick="followUser('${profileData?.id}')" class="w-full mt-4 ${userFollowing[currentUser.uid]?.includes(profileData?.id) ? 'bg-red-600' : 'bg-blue-600'} p-3 rounded-lg font-semibold">
+                                <button onclick="toggleFollow('${profileData?.id}')" class="w-full mt-4 ${userFollowing[currentUser.uid]?.includes(profileData?.id) ? 'bg-red-600' : 'bg-blue-600'} p-3 rounded-lg font-semibold">
                                     ${userFollowing[currentUser.uid]?.includes(profileData?.id) ? 'Unfollow' : 'Follow'}
                                 </button>
                             ` : ''}
@@ -4663,7 +5618,7 @@
                             <button onclick="toggleDevPowerModal()" class="text-2xl hover:text-gray-400">&times;</button>
                         </div>
                         
-                        <div class="space-y-4">
+                        <div class="space-y-4 max-h-96 overflow-y-auto">
                             <div class="p-4 bg-white/5 rounded-lg">
                                 <h4 class="font-bold mb-2 text-green-400">Tambah Badge</h4>
                                 <select id="dev-badge-user" class="w-full mb-2 p-2 rounded text-sm">
@@ -4691,27 +5646,56 @@
                             </div>
                             
                             <div class="p-4 bg-white/5 rounded-lg">
-                                <h4 class="font-bold mb-2 text-blue-400">Selesaikan Misi</h4>
-                                <select id="dev-mission-user" class="w-full mb-2 p-2 rounded text-sm">
+                                <h4 class="font-bold mb-2 text-blue-400">Set Verified Badge (SVG)</h4>
+                                <select id="dev-verified-user" class="w-full mb-2 p-2 rounded text-sm">
                                     <option value="">Pilih user</option>
-                                    ${members.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
+                                    ${members.map(m => `
+                                        <option value="${m.id}">
+                                            ${m.name} ${m.verified ? '✅ Verified' : ''}
+                                        </option>
+                                    `).join('')}
                                 </select>
-                                <select id="dev-mission-id" class="w-full mb-2 p-2 rounded text-sm">
-                                    ${missions.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
-                                </select>
-                                <button onclick="devCompleteMission(document.getElementById('dev-mission-user').value, document.getElementById('dev-mission-id').value)" class="w-full bg-gradient-to-r from-blue-500 to-purple-500 p-3 rounded-lg font-semibold">
-                                    Selesaikan Misi
-                                </button>
+                                <div class="flex gap-2">
+                                    <button onclick="setVerified(document.getElementById('dev-verified-user').value)" 
+                                            class="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 p-3 rounded-lg font-semibold flex items-center justify-center gap-2">
+                                        <svg width="18" height="18" viewBox="0 0 40 40" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Z"/>
+                                        </svg>
+                                        Verified
+                                    </button>
+                                    <button onclick="removeVerified(document.getElementById('dev-verified-user').value)" 
+                                            class="flex-1 bg-red-600 p-3 rounded-lg font-semibold">
+                                        <i class="fas fa-times-circle mr-2"></i>Remove
+                                    </button>
+                                </div>
                             </div>
                             
                             <div class="p-4 bg-white/5 rounded-lg">
-                                <h4 class="font-bold mb-2 text-purple-400">Tambah Title</h4>
+                                <h4 class="font-bold mb-2 text-purple-400">Atur Like & Views</h4>
+                                <select id="dev-post" class="w-full mb-2 p-2 rounded text-sm">
+                                    <option value="">Pilih postingan</option>
+                                    ${posts.map(p => `<option value="${p.id}">${p.content.substring(0, 30)}...</option>`).join('')}
+                                </select>
+                                <input type="number" id="dev-likes" placeholder="Jumlah likes" class="w-full mb-2 p-2 rounded text-sm">
+                                <input type="number" id="dev-views" placeholder="Jumlah views" class="w-full mb-2 p-2 rounded text-sm">
+                                <div class="flex gap-2">
+                                    <button onclick="likePost(document.getElementById('dev-post').value, document.getElementById('dev-likes').value)" class="flex-1 bg-gradient-to-r from-pink-500 to-red-500 p-3 rounded-lg font-semibold">
+                                        Set Likes
+                                    </button>
+                                    <button onclick="setViews(document.getElementById('dev-post').value, document.getElementById('dev-views').value)" class="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 p-3 rounded-lg font-semibold">
+                                        Set Views
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4 bg-white/5 rounded-lg">
+                                <h4 class="font-bold mb-2 text-orange-400">Tambah Title</h4>
                                 <input type="text" id="dev-title" placeholder="Title (contoh: The King)" class="w-full mb-2 p-2 rounded text-sm">
                                 <select id="dev-title-user" class="w-full mb-2 p-2 rounded text-sm">
                                     <option value="">Pilih user</option>
                                     ${members.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
                                 </select>
-                                <button onclick="devAddTitle(document.getElementById('dev-title-user').value, document.getElementById('dev-title').value)" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-lg font-semibold">
+                                <button onclick="devAddTitle(document.getElementById('dev-title-user').value, document.getElementById('dev-title').value)" class="w-full bg-gradient-to-r from-orange-500 to-red-500 p-3 rounded-lg font-semibold">
                                     Tambah Title
                                 </button>
                             </div>
@@ -5641,6 +6625,193 @@
             });
         }
 
+        // ==================== NAVIGASI ====================
+        window.navigateTo = (page) => {
+            currentPage = page;
+            renderMainContent();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            const menu = document.getElementById('mobile-menu');
+            const hamburger = document.getElementById('hamburger');
+            if (menu && menu.classList.contains('show')) {
+                menu.classList.remove('show');
+                hamburger?.classList.remove('active');
+            }
+        };
+
+        window.toggleMobileMenu = () => {
+            const menu = document.getElementById('mobile-menu');
+            const hamburger = document.getElementById('hamburger');
+            if (menu && hamburger) {
+                menu.classList.toggle('show');
+                hamburger.classList.toggle('active');
+            }
+        };
+
+        window.toggleNotificationPanel = () => {
+            showNotificationPanel = !showNotificationPanel;
+            updateNotificationPanel();
+        };
+
+        window.toggleLoginModal = () => {
+            showLoginModal = !showLoginModal;
+            showRegisterModal = false;
+            showForgotModal = false;
+            renderMainContent();
+        };
+
+        window.toggleRegisterModal = () => {
+            showRegisterModal = !showRegisterModal;
+            showLoginModal = false;
+            renderMainContent();
+        };
+
+        window.toggleForgotModal = () => {
+            showForgotModal = !showForgotModal;
+            showLoginModal = false;
+            renderMainContent();
+        };
+
+        window.toggleEditProfileModal = () => {
+            showEditProfileModal = !showEditProfileModal;
+            if (!showEditProfileModal) selectedMember = null;
+            renderMainContent();
+        };
+
+        window.toggleAddProjectModal = () => {
+            showAddProjectModal = !showAddProjectModal;
+            renderMainContent();
+        };
+
+        window.toggleAddScheduleModal = () => {
+            showAddScheduleModal = !showAddScheduleModal;
+            renderMainContent();
+        };
+
+        window.toggleAddNotificationModal = () => {
+            showAddNotificationModal = !showAddNotificationModal;
+            renderMainContent();
+        };
+
+        window.toggleAddTeacherModal = () => {
+            showAddTeacherModal = !showAddTeacherModal;
+            renderMainContent();
+        };
+
+        window.toggleAddAdminModal = () => {
+            showAddAdminModal = !showAddAdminModal;
+            renderMainContent();
+        };
+
+        window.toggleRemoveAdminModal = () => {
+            showRemoveAdminModal = !showRemoveAdminModal;
+            renderMainContent();
+        };
+
+        window.toggleSetLevelModal = () => {
+            showSetLevelModal = !showSetLevelModal;
+            renderMainContent();
+        };
+
+        window.toggleDevPowerModal = () => {
+            showDevPowerModal = !showDevPowerModal;
+            renderMainContent();
+        };
+
+        window.toggleMissionsModal = () => {
+            showMissionsModal = !showMissionsModal;
+            renderMainContent();
+        };
+
+        window.toggleBadgeUseModal = (badgeId) => {
+            selectedBadge = badgeId;
+            showBadgeUseModal = !showBadgeUseModal;
+            if (!showBadgeUseModal) selectedBadge = null;
+            renderMainContent();
+        };
+
+        window.toggleQRModal = () => {
+            showQRModal = !showQRModal;
+            renderMainContent();
+        };
+
+        window.toggleChatModal = () => {
+            showChatModal = !showChatModal;
+            renderMainContent();
+        };
+
+        window.toggleMysteryBoxModal = () => {
+            showMysteryBoxModal = !showMysteryBoxModal;
+            renderMainContent();
+        };
+
+        window.toggleStoryModal = () => {
+            showStoryModal = !showStoryModal;
+            if (!showStoryModal) selectedStory = null;
+            renderMainContent();
+        };
+
+        window.toggleFeedModal = () => {
+            showFeedModal = !showFeedModal;
+            renderMainContent();
+        };
+
+        window.toggleAddPostModal = () => {
+            showAddPostModal = !showAddPostModal;
+            renderMainContent();
+        };
+
+        window.toggleCommentModal = (postId) => {
+            if (postId) {
+                selectedPost = posts.find(p => p.id === postId);
+            }
+            showCommentModal = !showCommentModal;
+            renderMainContent();
+        };
+
+        window.toggleReactionModal = (postId, emoji) => {
+            if (postId) {
+                selectedPost = posts.find(p => p.id === postId);
+            }
+            if (emoji) {
+                addReaction(postId, emoji);
+            } else {
+                showReactionModal = !showReactionModal;
+                renderMainContent();
+            }
+        };
+
+        window.toggleFontSizeModal = () => {
+            showFontSizeModal = !showFontSizeModal;
+            renderMainContent();
+        };
+
+        window.toggleCropModal = () => {
+            showCropModal = !showCropModal;
+            renderMainContent();
+        };
+
+        window.toggleGroupLinkModal = () => {
+            showGroupLinkModal = !showGroupLinkModal;
+            renderMainContent();
+        };
+
+        window.toggleFollowersModal = () => {
+            showFollowersModal = !showFollowersModal;
+            renderMainContent();
+        };
+
+        window.showEditProfile = () => {
+            showEditProfileModal = true;
+            selectedMember = null;
+            renderMainContent();
+        };
+
+        window.showNotificationsPermission = () => {
+            showNotificationsPermissionModal = true;
+            renderMainContent();
+        };
+
         // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', async () => {
             AOS.init({ duration: 800, once: true, offset: 50 });
@@ -5676,11 +6847,25 @@
                             loadingScreen.style.opacity = '0';
                             setTimeout(() => {
                                 loadingScreen.style.display = 'none';
+                                
+                                // Show notification permission after load
+                                if ('Notification' in window && Notification.permission === 'default') {
+                                    setTimeout(() => {
+                                        showNotificationsPermission();
+                                    }, 2000);
+                                }
                             }, 300);
                         }
                     }, 300);
                 }
             }, 30);
+
+            // Load saved font size
+            const savedFontSize = localStorage.getItem('userFontSize');
+            if (savedFontSize) {
+                userFontSize = parseInt(savedFontSize);
+                document.body.style.fontSize = `${userFontSize}px`;
+            }
 
             // Setup realtime listeners
             setupRealtimeListeners();
