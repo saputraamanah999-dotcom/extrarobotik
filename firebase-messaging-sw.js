@@ -22,14 +22,11 @@ messaging.onBackgroundMessage((payload) => {
         icon: 'https://ui-avatars.com/api/?name=Ekskul&background=00d4ff&color=fff',
         badge: 'https://ui-avatars.com/api/?name=SMK&background=00d4ff&color=fff&size=72',
         data: payload.data,
+        vibrate: [200, 100, 200],
         actions: [
             {
                 action: 'open',
                 title: 'Buka'
-            },
-            {
-                action: 'close',
-                title: 'Tutup'
             }
         ]
     };
