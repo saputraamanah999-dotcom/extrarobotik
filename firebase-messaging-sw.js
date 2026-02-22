@@ -1,11 +1,7 @@
 // ==================== FIREBASE MESSAGING SERVICE WORKER ====================
-// Nama file: firebase-messaging-sw.js
-// Letakkan di ROOT folder website Anda
-
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
 
-// Firebase Config
 const firebaseConfig = {
     apiKey: "AIzaSyAzgv4PH8WDie21MhDWQyFzfuoIQnoG_z0",
     authDomain: "extrarobotik-96eff.firebaseapp.com",
@@ -19,12 +15,11 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
-// Logo untuk notifikasi
 const APP_LOGO = 'https://raw.githubusercontent.com/saputraamanah999-dotcom/extrarobotik/main/assets/images/saputra.png';
 
-// Handle notifikasi background (pas HP terkunci)
+// Handle background messages
 messaging.onBackgroundMessage((payload) => {
-    console.log('📱 [SW] Received background message:', payload);
+    console.log('📱 [SW] Background message:', payload);
     
     const notificationTitle = payload.notification?.title || 
                               payload.data?.title || 
@@ -35,30 +30,58 @@ messaging.onBackgroundMessage((payload) => {
                              payload.data?.message || 
                              'Ada notifikasi baru';
     
+    // OPTIMASI UNTUK LOCK SCREEN
     const notificationOptions = {
         body: notificationBody,
         icon: APP_LOGO,
         badge: APP_LOGO,
-        vibrate: [200, 100, 200],
-        data: payload.data || {},
-        requireInteraction: true,
+        vibrate: [500, 250, 500, 250, 500], // Getar lebih lama
+        tag: 'robotik-' + Date.now(),
+        renotify: true,
+        requireInteraction: true, // Notifikasi tetap di layar sampai diklik
         silent: false,
+        priority: 'high',
+        
+        // Android specific
+        android: {
+            priority: 'high',
+            visibility: 'public', // PENTING: muncul di lock screen
+            channelId: 'robotik_channel',
+            notificationPriority: 'PRIORITY_MAX',
+            sound: 'default',
+            vibrate: true,
+            color: '#00d4ff',
+            icon: APP_LOGO
+        },
+        
+        // Actions
         actions: [
             {
                 action: 'open',
-                title: 'Buka'
+                title: '🔍 Buka Aplikasi'
+            },
+            {
+                action: 'close',
+                title: '❌ Tutup'
             }
-        ]
+        ],
+        
+        data: {
+            ...payload.data,
+            priority: 'high',
+            timestamp: Date.now()
+        }
     };
 
     return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// Handle klik notifikasi
+// Handle notification click
 self.addEventListener('notificationclick', (event) => {
     console.log('📱 [SW] Notification clicked:', event);
     
-    event.notification.close();
+    const notification = event.notification;
+    notification.close();
     
     // Buka aplikasi
     event.waitUntil(
@@ -76,7 +99,6 @@ self.addEventListener('notificationclick', (event) => {
     );
 });
 
-// Service worker aktif
 self.addEventListener('install', (event) => {
     console.log('📱 [SW] Installed');
     self.skipWaiting();
